@@ -15,7 +15,8 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.layout.VBox?>
-<GridPane styleClass="root" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.parcel.coffee.controller.LoginController">
+<GridPane styleClass="root" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="com.parcel.coffee.controller.LoginController" onKeyPressed="#onKey">
    <children>
        <Label styleClass="header" text="Вход в панель администрирования" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
        <VBox GridPane.rowIndex="1" GridPane.columnIndex="0" alignment="CENTER">

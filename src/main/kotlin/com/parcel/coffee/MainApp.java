@@ -2,6 +2,7 @@ package com.parcel.coffee;
 
 import javafx.application.Application;
 import javafx.event.EventHandler;
+import javafx.scene.input.KeyCombination;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -30,10 +31,11 @@ public class MainApp extends Application {
 		});
 
 		switcher.switchToMainWindow();
-		stage.show();
+
 		stage.setFullScreen(true);
+		stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 
-
+		stage.show();
 	}
 
 

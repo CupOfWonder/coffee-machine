@@ -13,17 +13,22 @@ public class SceneSwitcher {
 
 	private Stage stage;
 	private Scene mainWindow;
-	private Scene secondScene;
+	private Scene loginWindow;
+	private Scene administrationWindow;
 
 	private SceneSwitcher() {
 		try {
-			Parent mainWindowRoot = FXMLLoader.load(getClass().getClassLoader().getResource("MainApp.fxml"));
+			Parent mainWindowRoot = FXMLLoader.load(getClass().getClassLoader().getResource("MainWindow.fxml"));
 			mainWindow = new Scene(mainWindowRoot);
 			mainWindow.getStylesheets().add(getClass().getClassLoader().getResource("style.css").toExternalForm());
 
 			Parent secondSceneRoot = FXMLLoader.load(getClass().getClassLoader().getResource("LoginWindow.fxml"));
-			secondScene = new Scene(secondSceneRoot);
-			secondScene.getStylesheets().add(getClass().getClassLoader().getResource("style.css").toExternalForm());
+			loginWindow = new Scene(secondSceneRoot);
+			loginWindow.getStylesheets().add(getClass().getClassLoader().getResource("style.css").toExternalForm());
+
+			Parent administrationRoot = FXMLLoader.load(getClass().getClassLoader().getResource("AdministrationPanel.fxml"));
+			administrationWindow = new Scene(administrationRoot);
+			administrationWindow.getStylesheets().add(getClass().getClassLoader().getResource("style.css").toExternalForm());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -45,14 +50,25 @@ public class SceneSwitcher {
 			stage.close();
 		}
 		stage.setScene(mainWindow);
+		stage.show();
 	}
 
-	public void switchToSecondScene() {
+	public void switchToLoginWindow() {
 		if(stage.isShowing()) {
 			stage.close();
 		}
-		stage.setScene(secondScene);
+		stage.setScene(loginWindow);
 		stage.setFullScreen(true);
 		stage.show();
 	}
+
+	public void switchToAdministrationPanel() {
+		if(stage.isShowing()) {
+			stage.close();
+		}
+		stage.setScene(administrationWindow);
+		stage.setFullScreen(true);
+		stage.show();
+	}
+
 }
