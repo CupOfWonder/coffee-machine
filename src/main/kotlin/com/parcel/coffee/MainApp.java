@@ -30,12 +30,12 @@ public class MainApp extends Application {
 			}
 		});
 
-		switcher.switchToMainWindow();
+
 
 		stage.setFullScreen(true);
 		stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 
-		stage.show();
+		switcher.switchToMainWindow();
 	}
 
 

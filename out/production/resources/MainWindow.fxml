@@ -13,7 +13,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 <GridPane styleClass="root" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1"
-          fx:controller="com.parcel.coffee.controller.MainAppController" onKeyTyped="#onKeyPressed" onMouseClicked="#onMouse">
+          fx:controller="com.parcel.coffee.controller.MainAppController" onMouseClicked="#onMouse">
    <children>
        <FlowPane GridPane.rowIndex="0" GridPane.columnIndex="0" alignment="CENTER">
            <Label styleClass="header" text="Кофе и молочные коктейли" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
