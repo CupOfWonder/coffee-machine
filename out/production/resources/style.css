@@ -54,3 +54,17 @@
 .money-info {
     -fx-font-size: 3em;
 }
+
+.login-form-label {
+    -fx-font-size: 3em;
+    -fx-text-fill: #1852af;
+    -fx-min-width: 200px;
+}
+
+.login-form-field {
+    -fx-font-size: 3em;
+}
+
+.login-form-cell {
+    -fx-padding: 25px;
+}

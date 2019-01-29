@@ -19,10 +19,11 @@ public class SceneSwitcher {
 		try {
 			Parent mainWindowRoot = FXMLLoader.load(getClass().getClassLoader().getResource("MainApp.fxml"));
 			mainWindow = new Scene(mainWindowRoot);
-			mainWindow.getStylesheets().add(getClass().getClassLoader().getResource("MainApp.css").toExternalForm());
+			mainWindow.getStylesheets().add(getClass().getClassLoader().getResource("style.css").toExternalForm());
 
-			Parent secondSceneRoot = FXMLLoader.load(getClass().getClassLoader().getResource("SecondScene.fxml"));
+			Parent secondSceneRoot = FXMLLoader.load(getClass().getClassLoader().getResource("LoginWindow.fxml"));
 			secondScene = new Scene(secondSceneRoot);
+			secondScene.getStylesheets().add(getClass().getClassLoader().getResource("style.css").toExternalForm());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
