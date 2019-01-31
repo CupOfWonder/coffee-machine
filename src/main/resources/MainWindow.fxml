@@ -15,9 +15,11 @@
 <GridPane styleClass="root" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1"
           fx:controller="com.parcel.coffee.controller.MainAppController" onMouseClicked="#onMouse">
    <children>
-       <FlowPane GridPane.rowIndex="0" GridPane.columnIndex="0" alignment="CENTER">
-           <Label styleClass="header" text="Кофе и молочные коктейли" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-       </FlowPane>
+       <HBox GridPane.rowIndex="0" GridPane.columnIndex="0" alignment="CENTER">
+           <Label alignment="CENTER" styleClass="balance-label" text="Баланс:"/>
+           <Pane HBox.hgrow="ALWAYS" />
+           <Label styleClass="balance-value" text="50р" GridPane.columnIndex="1"/>
+       </HBox>
 
        <GridPane hgap="20" vgap="20" GridPane.columnIndex="0" GridPane.rowIndex="1">
            <padding><Insets bottom="25" left="25" right="25" top="25" /></padding>
@@ -59,16 +61,6 @@
                    <Label styleClass="drink-price" text="200р" GridPane.columnIndex="1"/>
                </HBox>
 
-               <HBox styleClass="money-info" GridPane.rowIndex="3" GridPane.columnIndex="0" alignment="CENTER_LEFT" maxWidth="Infinity">
-                   <Label styleClass="drink-label" text="Необходимо внести:"/>
-                   <Label styleClass="drink-price" text="250р" GridPane.columnIndex="1"/>
-               </HBox>
-               <HBox styleClass="money-info" GridPane.rowIndex="3" GridPane.columnIndex="1" alignment="CENTER" maxWidth="Infinity">
-                   <Pane HBox.hgrow="ALWAYS" />
-                   <Label alignment="CENTER" styleClass="drink-label" text="Вы внесли:" onMouseClicked="#onMouse"/>
-                   <Label styleClass="drink-price" text="50р" GridPane.columnIndex="1"/>
-               </HBox>
-
            </children>
 
            <columnConstraints>
@@ -76,10 +68,9 @@
                <ColumnConstraints hgrow="ALWAYS" percentWidth="50.0" />
            </columnConstraints>
            <rowConstraints>
-               <RowConstraints maxHeight="Infinity" percentHeight="25" vgrow="ALWAYS" />
-               <RowConstraints maxHeight="Infinity" percentHeight="25" vgrow="ALWAYS" />
-               <RowConstraints maxHeight="Infinity" percentHeight="25" vgrow="ALWAYS" />
-               <RowConstraints maxHeight="Infinity" percentHeight="25" vgrow="ALWAYS" />
+               <RowConstraints maxHeight="Infinity" percentHeight="33" vgrow="ALWAYS" />
+               <RowConstraints maxHeight="Infinity" percentHeight="33" vgrow="ALWAYS" />
+               <RowConstraints maxHeight="Infinity" percentHeight="33" vgrow="ALWAYS" />
            </rowConstraints>
        </GridPane>
    </children>
@@ -87,7 +78,7 @@
         <ColumnConstraints hgrow="ALWAYS" percentWidth="100.0" />
     </columnConstraints>
     <rowConstraints>
-        <RowConstraints percentHeight="15.0" vgrow="ALWAYS" />
-        <RowConstraints maxHeight="Infinity" percentHeight="80.0" vgrow="ALWAYS" />
+        <RowConstraints percentHeight="25.0" vgrow="ALWAYS" />
+        <RowConstraints maxHeight="Infinity" percentHeight="75.0" vgrow="ALWAYS" />
     </rowConstraints>
 </GridPane>
