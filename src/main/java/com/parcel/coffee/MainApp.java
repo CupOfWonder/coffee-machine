@@ -1,5 +1,6 @@
 package com.parcel.coffee;
 
+import com.parcel.coffee.SceneSwitcher;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.scene.input.KeyCombination;
