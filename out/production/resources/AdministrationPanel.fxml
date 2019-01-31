@@ -12,61 +12,77 @@
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
+<?import javafx.scene.control.TextField?>
 <GridPane styleClass="root" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1"
           fx:controller="com.parcel.coffee.controller.AdministrationController">
     <children>
         <FlowPane GridPane.rowIndex="0" GridPane.columnIndex="0" alignment="CENTER">
-            <Label styleClass="header" text="Кофе и молочные коктейли" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+            <Label styleClass="header" text="Панель администратора" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
         </FlowPane>
 
         <GridPane hgap="20" vgap="20" GridPane.columnIndex="0" GridPane.rowIndex="1">
             <padding><Insets bottom="25" left="25" right="25" top="25" /></padding>
             <children>
                 <HBox styleClass="drink" GridPane.rowIndex="0" GridPane.columnIndex="0" alignment="CENTER" maxWidth="Infinity">
-                    <Label alignment="CENTER" styleClass="drink-number" text="1" />
-                    <Label alignment="CENTER" styleClass="drink-label" text="Эспрессо"/>
+                    <Label alignment="CENTER" styleClass="drink-number" text="1"/>
+                    <Pane minWidth="30" />
+                    <TextField styleClass="drink-name-field" />
                     <Pane HBox.hgrow="ALWAYS" />
-                    <Label styleClass="drink-price" text="100р" GridPane.columnIndex="1"/>
+                    <TextField styleClass="drink-price-field" />
+                    <Pane minWidth="10" />
+                    <Label styleClass="drink-price" text="р" />
                 </HBox>
                 <HBox styleClass="drink" GridPane.rowIndex="0" GridPane.columnIndex="1" alignment="CENTER" maxWidth="Infinity">
                     <Label alignment="CENTER" styleClass="drink-number" text="2" />
-                    <Label alignment="CENTER" styleClass="drink-label" text="Капучино"/>
+                    <Pane minWidth="30" />
+                    <TextField styleClass="drink-name-field" />
                     <Pane HBox.hgrow="ALWAYS" />
-                    <Label styleClass="drink-price" text="100р" GridPane.columnIndex="1"/>
+                    <TextField styleClass="drink-price-field" />
+                    <Pane minWidth="10" />
+                    <Label styleClass="drink-price" text="р" />
                 </HBox>
                 <HBox styleClass="drink" GridPane.rowIndex="1" GridPane.columnIndex="0" alignment="CENTER" maxWidth="Infinity">
                     <Label alignment="CENTER" styleClass="drink-number" text="3" />
-                    <Label alignment="CENTER" styleClass="drink-label" text="Латте"/>
+                    <Pane minWidth="30" />
+                    <TextField styleClass="drink-name-field" />
                     <Pane HBox.hgrow="ALWAYS" />
-                    <Label styleClass="drink-price" text="250р" GridPane.columnIndex="1"/>
+                    <TextField styleClass="drink-price-field" />
+                    <Pane minWidth="10" />
+                    <Label styleClass="drink-price" text="р" />
                 </HBox>
                 <HBox styleClass="drink" GridPane.rowIndex="1" GridPane.columnIndex="1" alignment="CENTER" maxWidth="Infinity">
                     <Label alignment="CENTER" styleClass="drink-number" text="4" />
-                    <Label alignment="CENTER" styleClass="drink-label" text="Малиновый коктейль"/>
+                    <Pane minWidth="30" />
+                    <TextField styleClass="drink-name-field" />
                     <Pane HBox.hgrow="ALWAYS" />
-                    <Label styleClass="drink-price" text="140р" GridPane.columnIndex="1"/>
+                    <TextField styleClass="drink-price-field" />
+                    <Pane minWidth="10" />
+                    <Label styleClass="drink-price" text="р" />
                 </HBox>
                 <HBox styleClass="drink" GridPane.rowIndex="2" GridPane.columnIndex="0" alignment="CENTER" maxWidth="Infinity">
                     <Label alignment="CENTER" styleClass="drink-number" text="5" />
-                    <Label alignment="CENTER" styleClass="drink-label" text="Шоколадный коктейль"/>
+                    <Pane minWidth="30" />
+                    <TextField styleClass="drink-name-field" />
                     <Pane HBox.hgrow="ALWAYS" />
-                    <Label styleClass="drink-price" text="150р" GridPane.columnIndex="1"/>
+                    <TextField styleClass="drink-price-field" />
+                    <Pane minWidth="10" />
+                    <Label styleClass="drink-price" text="р" />
                 </HBox>
                 <HBox styleClass="drink" GridPane.rowIndex="2" GridPane.columnIndex="1" alignment="CENTER" maxWidth="Infinity">
                     <Label alignment="CENTER" styleClass="drink-number" text="6" />
-                    <Label alignment="CENTER" styleClass="drink-label" text="Ванильный коктейль"/>
+                    <Pane minWidth="30" />
+                    <TextField styleClass="drink-name-field" />
                     <Pane HBox.hgrow="ALWAYS" />
-                    <Label styleClass="drink-price" text="200р" GridPane.columnIndex="1"/>
+                    <TextField styleClass="drink-price-field" />
+                    <Pane minWidth="10" />
+                    <Label styleClass="drink-price" text="р" />
                 </HBox>
 
                 <HBox styleClass="money-info" GridPane.rowIndex="3" GridPane.columnIndex="0" alignment="CENTER_LEFT" maxWidth="Infinity">
-                    <Label styleClass="drink-label" text="Необходимо внести:"/>
-                    <Label styleClass="drink-price" text="250р" GridPane.columnIndex="1"/>
+                    <Button text="Сменить пароль..." styleClass="control-button"/>
                 </HBox>
-                <HBox styleClass="money-info" GridPane.rowIndex="3" GridPane.columnIndex="1" alignment="CENTER" maxWidth="Infinity">
-                    <Pane HBox.hgrow="ALWAYS" />
-                    <Label alignment="CENTER" styleClass="drink-label" text="Вы внесли:" />
-                    <Label styleClass="drink-price" text="50р" GridPane.columnIndex="1"/>
+                <HBox styleClass="money-info" GridPane.rowIndex="3" GridPane.columnIndex="1" alignment="CENTER_RIGHT" maxWidth="Infinity">
+                    <Button text="Сохранить" styleClass="control-button"/>
                 </HBox>
 
             </children>

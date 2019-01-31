@@ -9,6 +9,8 @@ public class LoginController {
 	public void onKey(KeyEvent keyEvent) {
 		if(keyEvent.getCode() == KeyCode.ESCAPE) {
 			SceneSwitcher.getInstance().switchToMainWindow();
+		} else if (keyEvent.getCode() == KeyCode.ENTER) {
+			SceneSwitcher.getInstance().switchToAdministrationPanel();
 		}
 	}
 }

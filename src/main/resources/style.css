@@ -1,5 +1,6 @@
 .root {
     -fx-background-color: #FFFFFF;
+    -fx-font-family: Helvetica, Arial, sans-serif;
 }
 .table-view:focused {
     -fx-background-color: -fx-outer-border, -fx-inner-border, -fx-body-color;
@@ -13,7 +14,7 @@
     -fx-border-width: 1px;
     -fx-border-radius: 20px;
     -fx-background-color: transparent;
-    -fx-font-family: Helvetica, Arial, sans-serif;
+
     -fx-font-size: 3em; /* 12 */
     -fx-text-fill: #1852af;
     -fx-max-width: Infinity;
@@ -67,4 +68,22 @@
 
 .login-form-cell {
     -fx-padding: 25px;
+}
+
+.drink-name-field {
+    -fx-text-fill: #1852af;
+}
+
+.drink-price-field {
+    -fx-max-width: 150px;
+    -fx-text-fill: #1852af;
+}
+
+.control-button {
+    -fx-padding: 10px 25px 10px 25px;
+    -fx-border-color: #1852af;
+    -fx-border-width: 1px;
+    -fx-border-radius: 30px;
+    -fx-background-color: transparent;
+    -fx-text-fill: #1852af;
 }
