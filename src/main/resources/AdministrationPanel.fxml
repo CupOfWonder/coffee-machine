@@ -80,7 +80,7 @@
                 </HBox>
 
                 <HBox styleClass="default-text" GridPane.rowIndex="3" GridPane.columnIndex="0" alignment="CENTER_LEFT" maxWidth="Infinity">
-                    <Button text="Сменить пароль..." styleClass="control-button"/>
+                    <Button text="Сменить пароль..." styleClass="control-button" onMouseClicked="#onChangePassword"/>
                 </HBox>
 
                 <HBox styleClass="default-text" GridPane.rowIndex="3" GridPane.columnIndex="1" alignment="CENTER_RIGHT" maxWidth="Infinity">

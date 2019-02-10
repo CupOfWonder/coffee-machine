@@ -57,7 +57,7 @@
     -fx-text-fill: #1852af;
 }
 
-.login-form-label {
+.form-label {
     -fx-font-size: 3em;
     -fx-text-fill: #1852af;
     -fx-min-width: 200px;
@@ -114,4 +114,19 @@
     -fx-text-fill: #1852af;
     -fx-font-weight: bold;
     -fx-padding: 25px;
+}
+
+.change-password-form-cell {
+    -fx-padding: 25px;
+    -fx-min-width: 900px;
+}
+
+.grid-form-label {
+    -fx-font-size: 3em;
+    -fx-padding: 15px;
+    -fx-text-fill: #1852af;
+}
+.grid-form-field {
+    -fx-font-size: 3em;
+    -fx-text-fill: #1852af;
 }

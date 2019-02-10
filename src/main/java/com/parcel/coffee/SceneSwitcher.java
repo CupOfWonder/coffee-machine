@@ -15,6 +15,7 @@ public class SceneSwitcher {
 	private Scene mainWindow;
 	private Scene loginWindow;
 	private Scene administrationWindow;
+	private Scene changePasswordWindow;
 
 	private SceneSwitcher() {
 		try {
@@ -29,6 +30,10 @@ public class SceneSwitcher {
 			Parent administrationRoot = FXMLLoader.load(getClass().getClassLoader().getResource("AdministrationPanel.fxml"));
 			administrationWindow = new Scene(administrationRoot);
 			administrationWindow.getStylesheets().add(getClass().getClassLoader().getResource("style.css").toExternalForm());
+
+			Parent changePasswordRoot = FXMLLoader.load(getClass().getClassLoader().getResource("ChangePasswordWindow.fxml"));
+			changePasswordWindow = new Scene(changePasswordRoot);
+			changePasswordWindow.getStylesheets().add(getClass().getClassLoader().getResource("style.css").toExternalForm());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -70,5 +75,15 @@ public class SceneSwitcher {
 		stage.setFullScreen(true);
 		stage.show();
 	}
+
+	public void switchToChangePasswordWindow() {
+		if(stage.isShowing()) {
+			stage.close();
+		}
+		stage.setScene(changePasswordWindow);
+		stage.setFullScreen(true);
+		stage.show();
+	}
+
 
 }

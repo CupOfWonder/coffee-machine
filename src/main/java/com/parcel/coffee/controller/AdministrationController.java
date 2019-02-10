@@ -111,6 +111,10 @@ public class AdministrationController {
 		}, 1000);
 	}
 
+	public void onChangePassword(MouseEvent mouseEvent) {
+		SceneSwitcher.getInstance().switchToChangePasswordWindow();
+	}
+
 	private class PriceFormatException extends Exception {
 		public PriceFormatException() {
 			super();

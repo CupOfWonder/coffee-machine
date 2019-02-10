@@ -11,7 +11,7 @@ public class PasswordManager {
 
 	private static final String FILE_PATH = "passwd.json";
 
-	private enum Status {
+	public enum PasswordChangeStatus {
 		CHANGED_SUCCESSFULLY, INCORRECT_OLD_PASSWORD, CONFIRMATION_DOES_NOT_MATCH
 	}
 
@@ -45,21 +45,21 @@ public class PasswordManager {
 		return login.equals(rightCred.getLogin()) && BCrypt.checkpw(password, rightCred.getEncryptedPassword());
 	}
 
-	public Status changeLoginAndPassword(String login, String oldPassword, String newPassword, String confirmation) {
+	public PasswordChangeStatus changeLoginAndPassword(String login, String oldPassword, String newPassword, String confirmation) {
 		Credentials rightCred = readCredentialsFromFile();
 
 		if(!loginAndPasswordCorrect(login, oldPassword, rightCred)) {
-			return Status.INCORRECT_OLD_PASSWORD;
+			return PasswordChangeStatus.INCORRECT_OLD_PASSWORD;
 		}
 
 		if(!newPassword.equals(confirmation)) {
-			return Status.CONFIRMATION_DOES_NOT_MATCH;
+			return PasswordChangeStatus.CONFIRMATION_DOES_NOT_MATCH;
 		}
 
 		Credentials newCred = new Credentials(login, newPassword);
 
 		saveCredentials(newCred);
-		return Status.CHANGED_SUCCESSFULLY;
+		return PasswordChangeStatus.CHANGED_SUCCESSFULLY;
 	}
 
 	private void saveCredentials(Credentials credentials) {

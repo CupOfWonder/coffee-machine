@@ -21,17 +21,17 @@
        <Label styleClass="header" text="Вход в панель администрирования" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
        <VBox GridPane.rowIndex="1" GridPane.columnIndex="0" alignment="CENTER">
            <HBox alignment="CENTER" styleClass="login-form-cell">
-               <Label styleClass="login-form-label">Логин:</Label>
+               <Label styleClass="form-label">Логин:</Label>
                <Pane minWidth="40" />
                <TextField styleClass="login-form-field" fx:id="loginField"/>
            </HBox>
            <HBox alignment="CENTER">
-               <Label styleClass="login-form-label">Пароль:</Label>
+               <Label styleClass="form-label">Пароль:</Label>
                <Pane minWidth="40" />
                <PasswordField styleClass="login-form-field" fx:id="passwordField"/>
            </HBox>
            <HBox alignment="CENTER" styleClass="login-form-cell">
-               <Label styleClass="login-form-label" managed="false" fx:id="loginError">Неверный логин или пароль</Label>
+               <Label styleClass="form-label" managed="false" fx:id="loginError">Неверный логин или пароль</Label>
            </HBox>
            <HBox alignment="CENTER" styleClass="login-form-cell">
                <Button text="Войти" styleClass="enter-button" onMouseClicked="#onEnter"/>
