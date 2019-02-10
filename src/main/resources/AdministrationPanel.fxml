@@ -15,7 +15,7 @@
 <?import javafx.scene.control.TextField?>
 <?import com.sun.javafx.scene.control.skin.IntegerField?>
 <GridPane styleClass="root" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1"
-          fx:controller="com.parcel.coffee.controller.AdministrationController">
+          fx:controller="com.parcel.coffee.controller.AdministrationController" onKeyPressed="#onKey">
     <children>
         <FlowPane GridPane.rowIndex="0" GridPane.columnIndex="0" alignment="CENTER">
             <Label styleClass="header" text="Панель администратора" GridPane.columnIndex="0" GridPane.rowIndex="0"/>

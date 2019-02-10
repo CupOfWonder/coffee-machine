@@ -8,6 +8,8 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 
 import java.util.ArrayList;
@@ -41,6 +43,10 @@ public class AdministrationController {
 
 
 	public void onSaveDrinks(MouseEvent mouseEvent) {
+		saveDrinks();
+	}
+
+	private void saveDrinks() {
 		try {
 			List<Drink> drinks = readDrinksFromInterface();
 			drinkListManager.savePricesAndTitles(drinks);
@@ -113,6 +119,12 @@ public class AdministrationController {
 
 	public void onChangePassword(MouseEvent mouseEvent) {
 		SceneSwitcher.getInstance().switchToChangePasswordWindow();
+	}
+
+	public void onKey(KeyEvent keyEvent) {
+		if(keyEvent.getCode() == KeyCode.ENTER) {
+			saveDrinks();
+		}
 	}
 
 	private class PriceFormatException extends Exception {
