@@ -26,39 +26,39 @@
            <children>
                <HBox styleClass="drink" GridPane.rowIndex="0" GridPane.columnIndex="0" alignment="CENTER" maxWidth="Infinity">
                    <Label alignment="CENTER" styleClass="drink-number" text="1" />
-                   <Label alignment="CENTER" styleClass="drink-label" text="Эспрессо"/>
+                   <Label alignment="CENTER" styleClass="drink-label" fx:id="name1"/>
                    <Pane HBox.hgrow="ALWAYS" />
-                   <Label styleClass="drink-price" text="100р" GridPane.columnIndex="1"/>
+                   <Label styleClass="drink-price" text="100р" GridPane.columnIndex="1" fx:id="price1"/>
                </HBox>
                <HBox styleClass="drink" GridPane.rowIndex="0" GridPane.columnIndex="1" alignment="CENTER" maxWidth="Infinity">
                    <Label alignment="CENTER" styleClass="drink-number" text="2" />
-                   <Label alignment="CENTER" styleClass="drink-label" text="Капучино"/>
+                   <Label alignment="CENTER" styleClass="drink-label" text="Капучино" fx:id="name2"/>
                    <Pane HBox.hgrow="ALWAYS" />
-                   <Label styleClass="drink-price" text="100р" GridPane.columnIndex="1"/>
+                   <Label styleClass="drink-price" text="100р" GridPane.columnIndex="1" fx:id="price2"/>
                </HBox>
                <HBox styleClass="drink" GridPane.rowIndex="1" GridPane.columnIndex="0" alignment="CENTER" maxWidth="Infinity">
                    <Label alignment="CENTER" styleClass="drink-number" text="3" />
-                   <Label alignment="CENTER" styleClass="drink-label" text="Латте"/>
+                   <Label alignment="CENTER" styleClass="drink-label" text="Латте" fx:id="name3"/>
                    <Pane HBox.hgrow="ALWAYS" />
-                   <Label styleClass="drink-price" text="250р" GridPane.columnIndex="1"/>
+                   <Label styleClass="drink-price" text="250р" GridPane.columnIndex="1" fx:id="price3"/>
                </HBox>
                <HBox styleClass="drink" GridPane.rowIndex="1" GridPane.columnIndex="1" alignment="CENTER" maxWidth="Infinity">
                    <Label alignment="CENTER" styleClass="drink-number" text="4" />
-                   <Label alignment="CENTER" styleClass="drink-label" text="Малиновый коктейль"/>
+                   <Label alignment="CENTER" styleClass="drink-label" text="Малиновый коктейль" fx:id="name4"/>
                    <Pane HBox.hgrow="ALWAYS" />
-                   <Label styleClass="drink-price" text="140р" GridPane.columnIndex="1"/>
+                   <Label styleClass="drink-price" text="140р" GridPane.columnIndex="1" fx:id="price4"/>
                </HBox>
                <HBox styleClass="drink" GridPane.rowIndex="2" GridPane.columnIndex="0" alignment="CENTER" maxWidth="Infinity">
                    <Label alignment="CENTER" styleClass="drink-number" text="5" />
-                   <Label alignment="CENTER" styleClass="drink-label" text="Шоколадный коктейль"/>
+                   <Label alignment="CENTER" styleClass="drink-label" text="Шоколадный коктейль" fx:id="name5"/>
                    <Pane HBox.hgrow="ALWAYS" />
-                   <Label styleClass="drink-price" text="150р" GridPane.columnIndex="1"/>
+                   <Label styleClass="drink-price" text="150р" GridPane.columnIndex="1" fx:id="price5"/>
                </HBox>
                <HBox styleClass="drink" GridPane.rowIndex="2" GridPane.columnIndex="1" alignment="CENTER" maxWidth="Infinity">
                    <Label alignment="CENTER" styleClass="drink-number" text="6" />
-                   <Label alignment="CENTER" styleClass="drink-label" text="Ванильный коктейль"/>
+                   <Label alignment="CENTER" styleClass="drink-label" text="Ванильный коктейль" fx:id="name6"/>
                    <Pane HBox.hgrow="ALWAYS" />
-                   <Label styleClass="drink-price" text="200р" GridPane.columnIndex="1"/>
+                   <Label styleClass="drink-price" text="200р" GridPane.columnIndex="1" fx:id="price6"/>
                </HBox>
 
            </children>

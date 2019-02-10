@@ -2,6 +2,7 @@ package com.parcel.coffee.controller;
 
 import com.parcel.coffee.SceneSwitcher;
 import com.parcel.coffee.core.auth.PasswordManager;
+import javafx.application.Platform;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -32,7 +33,15 @@ public class LoginController {
 		String password = passwordField.getText();
 
 		if(pm.checkLoginAndPassword(login, password)) {
-			SceneSwitcher.getInstance().switchToAdministrationPanel();
+			loginField.setText(null);
+			passwordField.setText(null);
+
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					SceneSwitcher.getInstance().switchToAdministrationPanel();
+				}
+			});
 		} else {
 			showError();
 		}

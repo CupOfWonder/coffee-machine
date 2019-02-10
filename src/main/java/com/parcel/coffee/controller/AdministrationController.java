@@ -3,6 +3,7 @@ package com.parcel.coffee.controller;
 import com.parcel.coffee.SceneSwitcher;
 import com.parcel.coffee.core.drinks.Drink;
 import com.parcel.coffee.core.drinks.DrinkListManager;
+import com.parcel.coffee.core.events.EventBus;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -48,6 +49,7 @@ public class AdministrationController {
 				@Override
 				public void run() {
 					SceneSwitcher.getInstance().switchToMainWindow();
+					EventBus.getInstance().fireDrinkListChanged();
 				}
 			});
 
