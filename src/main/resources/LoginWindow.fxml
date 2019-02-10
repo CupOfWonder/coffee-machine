@@ -23,12 +23,18 @@
            <HBox alignment="CENTER" styleClass="login-form-cell">
                <Label styleClass="login-form-label">Логин:</Label>
                <Pane minWidth="40" />
-               <TextField styleClass="login-form-field"/>
+               <TextField styleClass="login-form-field" fx:id="loginField"/>
            </HBox>
-           <HBox  alignment="CENTER">
+           <HBox alignment="CENTER">
                <Label styleClass="login-form-label">Пароль:</Label>
                <Pane minWidth="40" />
-               <PasswordField styleClass="login-form-field"/>
+               <PasswordField styleClass="login-form-field" fx:id="passwordField"/>
+           </HBox>
+           <HBox alignment="CENTER" styleClass="login-form-cell">
+               <Label styleClass="login-form-label" managed="false" fx:id="loginError">Неверный логин или пароль</Label>
+           </HBox>
+           <HBox alignment="CENTER" styleClass="login-form-cell">
+               <Button text="Войти" styleClass="enter-button" />
            </HBox>
        </VBox>
    </children>

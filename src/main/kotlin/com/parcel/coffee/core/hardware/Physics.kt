@@ -57,8 +57,7 @@ class Board
     /**
      * Сохраниь настройки в файл.
      */
-    fun save() : Boolean
-    {
+    fun save() : Boolean {
         try {
             val file = File(settingsFileName)
 
