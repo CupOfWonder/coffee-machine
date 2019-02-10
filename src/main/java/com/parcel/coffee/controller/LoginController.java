@@ -7,6 +7,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 
 public class LoginController {
 
@@ -20,12 +21,11 @@ public class LoginController {
 		if(keyEvent.getCode() == KeyCode.ESCAPE) {
 			SceneSwitcher.getInstance().switchToMainWindow();
 		} else if (keyEvent.getCode() == KeyCode.ENTER) {
-			tryToLogin();
-
+			tryToAuth();
 		}
 	}
 
-	private void tryToLogin() {
+	private void tryToAuth() {
 		PasswordManager pm = new PasswordManager();
 
 		String login = loginField.getText();
@@ -40,5 +40,9 @@ public class LoginController {
 
 	private void showError() {
 		loginError.setManaged(true);
+	}
+
+	public void onEnter(MouseEvent mouseEvent) {
+		tryToAuth();
 	}
 }

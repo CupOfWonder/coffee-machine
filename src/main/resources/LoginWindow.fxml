@@ -34,7 +34,7 @@
                <Label styleClass="login-form-label" managed="false" fx:id="loginError">Неверный логин или пароль</Label>
            </HBox>
            <HBox alignment="CENTER" styleClass="login-form-cell">
-               <Button text="Войти" styleClass="enter-button" />
+               <Button text="Войти" styleClass="enter-button" onMouseClicked="#onEnter"/>
            </HBox>
        </VBox>
    </children>
