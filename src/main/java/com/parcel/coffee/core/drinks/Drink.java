@@ -4,20 +4,20 @@ package com.parcel.coffee.core.drinks;
 
 public class Drink implements Serializable {
 
-    private String drink;
+    private String name;
     private int price;
 
-    public Drink(String drink, int price) {
-        this.drink = drink;
+    public Drink(String name, int price) {
+        this.name = name;
         this.price = price;
     }
 
-    public String getDrink() {
-        return drink;
+    public String getName() {
+        return name;
     }
 
-    public void setDrink(String drink) {
-        this.drink = drink;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public int getPrice() {
@@ -31,7 +31,7 @@ public class Drink implements Serializable {
     @Override
     public String toString() {
         return "{" +
-                "drink='" + drink + '\'' +
+                "name='" + name + '\'' +
                 ", price=" + price +
                 '}';
     }

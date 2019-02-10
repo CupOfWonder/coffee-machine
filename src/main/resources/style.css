@@ -52,8 +52,9 @@
     -fx-font-weight: bold;
 }
 
-.money-info {
+.default-text {
     -fx-font-size: 3em;
+    -fx-text-fill: #1852af;
 }
 
 .login-form-label {
@@ -85,9 +86,10 @@
     -fx-padding: 10px 25px 10px 25px;
     -fx-border-color: #1852af;
     -fx-border-width: 1px;
-    -fx-border-radius: 30px;
+    -fx-border-radius: 20px;
     -fx-background-color: transparent;
     -fx-text-fill: #1852af;
+    -fx-font-size: 3em;
 }
 
 .enter-button {

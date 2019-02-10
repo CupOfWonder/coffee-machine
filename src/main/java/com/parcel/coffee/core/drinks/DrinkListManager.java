@@ -4,11 +4,11 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DrinkListSaver {
+public class DrinkListManager {
 
     public static final String FILE_PATH = "drinks.bin";
 
-    public DrinkListSaver() {
+    public DrinkListManager() {
         if(!drinkFileExists()) {
             createDefaultDrinkList();
         }

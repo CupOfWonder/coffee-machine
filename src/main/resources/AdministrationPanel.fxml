@@ -13,6 +13,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.control.TextField?>
+<?import com.sun.javafx.scene.control.skin.IntegerField?>
 <GridPane styleClass="root" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1"
           fx:controller="com.parcel.coffee.controller.AdministrationController">
     <children>
@@ -26,63 +27,66 @@
                 <HBox styleClass="drink" GridPane.rowIndex="0" GridPane.columnIndex="0" alignment="CENTER" maxWidth="Infinity">
                     <Label alignment="CENTER" styleClass="drink-number" text="1"/>
                     <Pane minWidth="30" />
-                    <TextField styleClass="drink-name-field" />
+                    <TextField styleClass="drink-name-field" fx:id="name1"/>
                     <Pane HBox.hgrow="ALWAYS" />
-                    <TextField styleClass="drink-price-field" />
+                    <TextField styleClass="drink-price-field" fx:id="price1"/>
                     <Pane minWidth="10" />
                     <Label styleClass="drink-price" text="р" />
                 </HBox>
                 <HBox styleClass="drink" GridPane.rowIndex="0" GridPane.columnIndex="1" alignment="CENTER" maxWidth="Infinity">
                     <Label alignment="CENTER" styleClass="drink-number" text="2" />
                     <Pane minWidth="30" />
-                    <TextField styleClass="drink-name-field" />
+                    <TextField styleClass="drink-name-field" fx:id="name2"/>
                     <Pane HBox.hgrow="ALWAYS" />
-                    <TextField styleClass="drink-price-field" />
+                    <TextField styleClass="drink-price-field" fx:id="price2"/>
                     <Pane minWidth="10" />
                     <Label styleClass="drink-price" text="р" />
                 </HBox>
                 <HBox styleClass="drink" GridPane.rowIndex="1" GridPane.columnIndex="0" alignment="CENTER" maxWidth="Infinity">
                     <Label alignment="CENTER" styleClass="drink-number" text="3" />
                     <Pane minWidth="30" />
-                    <TextField styleClass="drink-name-field" />
+                    <TextField styleClass="drink-name-field" fx:id="name3"/>
                     <Pane HBox.hgrow="ALWAYS" />
-                    <TextField styleClass="drink-price-field" />
+                    <TextField styleClass="drink-price-field" fx:id="price3"/>
                     <Pane minWidth="10" />
                     <Label styleClass="drink-price" text="р" />
                 </HBox>
                 <HBox styleClass="drink" GridPane.rowIndex="1" GridPane.columnIndex="1" alignment="CENTER" maxWidth="Infinity">
                     <Label alignment="CENTER" styleClass="drink-number" text="4" />
                     <Pane minWidth="30" />
-                    <TextField styleClass="drink-name-field" />
+                    <TextField styleClass="drink-name-field" fx:id="name4"/>
                     <Pane HBox.hgrow="ALWAYS" />
-                    <TextField styleClass="drink-price-field" />
+                    <TextField styleClass="drink-price-field" fx:id="price4"/>
                     <Pane minWidth="10" />
                     <Label styleClass="drink-price" text="р" />
                 </HBox>
                 <HBox styleClass="drink" GridPane.rowIndex="2" GridPane.columnIndex="0" alignment="CENTER" maxWidth="Infinity">
                     <Label alignment="CENTER" styleClass="drink-number" text="5" />
                     <Pane minWidth="30" />
-                    <TextField styleClass="drink-name-field" />
+                    <TextField styleClass="drink-name-field" fx:id="name5"/>
                     <Pane HBox.hgrow="ALWAYS" />
-                    <TextField styleClass="drink-price-field" />
+                    <TextField styleClass="drink-price-field" fx:id="price5"/>
                     <Pane minWidth="10" />
                     <Label styleClass="drink-price" text="р" />
                 </HBox>
                 <HBox styleClass="drink" GridPane.rowIndex="2" GridPane.columnIndex="1" alignment="CENTER" maxWidth="Infinity">
                     <Label alignment="CENTER" styleClass="drink-number" text="6" />
                     <Pane minWidth="30" />
-                    <TextField styleClass="drink-name-field" />
+                    <TextField styleClass="drink-name-field" fx:id="name6"/>
                     <Pane HBox.hgrow="ALWAYS" />
-                    <TextField styleClass="drink-price-field" />
+                    <TextField styleClass="drink-price-field" fx:id="price6"/>
                     <Pane minWidth="10" />
                     <Label styleClass="drink-price" text="р" />
                 </HBox>
 
-                <HBox styleClass="money-info" GridPane.rowIndex="3" GridPane.columnIndex="0" alignment="CENTER_LEFT" maxWidth="Infinity">
+                <HBox styleClass="default-text" GridPane.rowIndex="3" GridPane.columnIndex="0" alignment="CENTER_LEFT" maxWidth="Infinity">
                     <Button text="Сменить пароль..." styleClass="control-button"/>
                 </HBox>
-                <HBox styleClass="money-info" GridPane.rowIndex="3" GridPane.columnIndex="1" alignment="CENTER_RIGHT" maxWidth="Infinity">
-                    <Button text="Сохранить" styleClass="control-button"/>
+
+                <HBox styleClass="default-text" GridPane.rowIndex="3" GridPane.columnIndex="1" alignment="CENTER_RIGHT" maxWidth="Infinity">
+                    <Label text="Информация сохранена" styleClass="default-text" managed="false" fx:id="infoText"/>
+                    <Pane minWidth="40" />
+                    <Button text="Сохранить" styleClass="control-button" onMouseClicked="#onSaveDrinks"/>
                 </HBox>
 
             </children>

@@ -4,7 +4,7 @@ public class TestApp {
 
     public static void main(String[] args) {
 
-        DrinkListSaver m = new DrinkListSaver();
+        DrinkListManager m = new DrinkListManager();
 
         m.createDefaultDrinkList();
 
