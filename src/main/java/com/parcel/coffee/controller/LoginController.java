@@ -35,6 +35,7 @@ public class LoginController {
 		if(pm.checkLoginAndPassword(login, password)) {
 			loginField.setText(null);
 			passwordField.setText(null);
+			loginError.setManaged(false);
 
 			Platform.runLater(new Runnable() {
 				@Override

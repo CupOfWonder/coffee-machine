@@ -124,6 +124,8 @@ public class AdministrationController {
 	public void onKey(KeyEvent keyEvent) {
 		if(keyEvent.getCode() == KeyCode.ENTER) {
 			saveDrinks();
+		} else if (keyEvent.getCode() == KeyCode.ESCAPE) {
+			SceneSwitcher.getInstance().switchToMainWindow();
 		}
 	}
 
