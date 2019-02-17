@@ -21,8 +21,6 @@ public class MainApp extends Application {
 
 
 		stage.setResizable(false);
-		stage.sizeToScene();
-
 		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
 			public void handle(WindowEvent event) {

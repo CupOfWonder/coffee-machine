@@ -21,6 +21,20 @@
     -fx-max-height: Infinity;
 }
 
+.drink-active {
+    -fx-padding: 25px 50px 25px 50px;
+    -fx-border-color: #1852af;
+    -fx-border-width: 1px;
+    -fx-border-radius: 20px;
+    -fx-background-color: #1852af;
+    -fx-background-radius: 20px;
+
+    -fx-font-size: 3em; /* 12 */
+    -fx-text-fill: #FFF !important;
+    -fx-max-width: Infinity;
+    -fx-max-height: Infinity;
+}
+
 .header {
     -fx-font-size: 4em;
     -fx-text-alignment: center;
@@ -34,20 +48,23 @@
 
 .drink-number {
     -fx-min-width: 50px;
-    -fx-text-fill: #1852af;
+    -fx-text-fill: inherit;
     -fx-font-weight: bold;
     -fx-border-width: 2px;
     -fx-border-color: #1852af;
     -fx-border-radius: 25px;
 }
+.drink-active .drink-number {
+    -fx-border-color: #FFF !important;
+}
 
 .drink-label {
-    -fx-text-fill: #1852af;
+    -fx-text-fill: inherit;
     -fx-padding: 50px;
 }
 
 .drink-price {
-    -fx-text-fill: #1852af;
+    -fx-text-fill: inherit;
     -fx-text-alignment: right;
     -fx-font-weight: bold;
 }
@@ -129,4 +146,15 @@
 .grid-form-field {
     -fx-font-size: 3em;
     -fx-text-fill: #1852af;
+}
+
+.working-label {
+    -fx-font-size: 8em;
+    -fx-text-fill: #1852af;
+    -fx-padding: 25px;
+}
+.ready-label {
+    -fx-font-size: 8em;
+    -fx-text-fill: #1852af;
+    -fx-padding: 25px;
 }

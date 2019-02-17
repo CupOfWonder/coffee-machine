@@ -13,48 +13,54 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 <GridPane styleClass="root" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1"
-          fx:controller="com.parcel.coffee.controller.MainAppController" onMouseClicked="#onMouse" minWidth="Infinity">
+          fx:controller="com.parcel.coffee.controller.MainAppController" onMouseClicked="#onMouse">
    <children>
-       <HBox GridPane.rowIndex="0" GridPane.columnIndex="0" alignment="CENTER">
+       <HBox GridPane.rowIndex="0" GridPane.columnIndex="0" alignment="CENTER" fx:id="balanceLabel">
            <Label alignment="CENTER" styleClass="balance-label" text="Баланс:"/>
            <Pane HBox.hgrow="ALWAYS" />
            <Label styleClass="balance-value" text="50р" GridPane.columnIndex="1"/>
+       </HBox>
+       <HBox GridPane.rowIndex="0" GridPane.columnIndex="0" alignment="CENTER" fx:id="drinkIsMakingLabel" visible="false">
+           <Label alignment="CENTER" styleClass="working-label" text="Приготовление"/>
+       </HBox>
+       <HBox GridPane.rowIndex="0" GridPane.columnIndex="0" alignment="CENTER" fx:id="drinkReadyLabel" visible="false">
+           <Label alignment="CENTER" styleClass="working-label" text="Готово!"/>
        </HBox>
 
        <GridPane hgap="20" vgap="20" GridPane.columnIndex="0" GridPane.rowIndex="1">
            <padding><Insets bottom="25" left="25" right="25" top="25" /></padding>
            <children>
-               <HBox styleClass="drink" GridPane.rowIndex="0" GridPane.columnIndex="0" alignment="CENTER" maxWidth="Infinity">
+               <HBox styleClass="drink" GridPane.rowIndex="0" GridPane.columnIndex="0" alignment="CENTER" maxWidth="Infinity" fx:id="drinkPanel1">
                    <Label alignment="CENTER" styleClass="drink-number" text="1" />
                    <Label alignment="CENTER" styleClass="drink-label" fx:id="name1"/>
                    <Pane HBox.hgrow="ALWAYS" />
                    <Label styleClass="drink-price" text="100р" GridPane.columnIndex="1" fx:id="price1"/>
                </HBox>
-               <HBox styleClass="drink" GridPane.rowIndex="0" GridPane.columnIndex="1" alignment="CENTER" maxWidth="Infinity">
+               <HBox styleClass="drink" GridPane.rowIndex="0" GridPane.columnIndex="1" alignment="CENTER" maxWidth="Infinity" fx:id="drinkPanel2">
                    <Label alignment="CENTER" styleClass="drink-number" text="2" />
                    <Label alignment="CENTER" styleClass="drink-label" text="Капучино" fx:id="name2"/>
                    <Pane HBox.hgrow="ALWAYS" />
                    <Label styleClass="drink-price" text="100р" GridPane.columnIndex="1" fx:id="price2"/>
                </HBox>
-               <HBox styleClass="drink" GridPane.rowIndex="1" GridPane.columnIndex="0" alignment="CENTER" maxWidth="Infinity">
+               <HBox styleClass="drink" GridPane.rowIndex="1" GridPane.columnIndex="0" alignment="CENTER" maxWidth="Infinity" fx:id="drinkPanel3">
                    <Label alignment="CENTER" styleClass="drink-number" text="3" />
                    <Label alignment="CENTER" styleClass="drink-label" text="Латте" fx:id="name3"/>
                    <Pane HBox.hgrow="ALWAYS" />
                    <Label styleClass="drink-price" text="250р" GridPane.columnIndex="1" fx:id="price3"/>
                </HBox>
-               <HBox styleClass="drink" GridPane.rowIndex="1" GridPane.columnIndex="1" alignment="CENTER" maxWidth="Infinity">
+               <HBox styleClass="drink" GridPane.rowIndex="1" GridPane.columnIndex="1" alignment="CENTER" maxWidth="Infinity" fx:id="drinkPanel4">
                    <Label alignment="CENTER" styleClass="drink-number" text="4" />
                    <Label alignment="CENTER" styleClass="drink-label" text="Малиновый коктейль" fx:id="name4"/>
                    <Pane HBox.hgrow="ALWAYS" />
                    <Label styleClass="drink-price" text="140р" GridPane.columnIndex="1" fx:id="price4"/>
                </HBox>
-               <HBox styleClass="drink" GridPane.rowIndex="2" GridPane.columnIndex="0" alignment="CENTER" maxWidth="Infinity">
+               <HBox styleClass="drink" GridPane.rowIndex="2" GridPane.columnIndex="0" alignment="CENTER" maxWidth="Infinity" fx:id="drinkPanel5">
                    <Label alignment="CENTER" styleClass="drink-number" text="5" />
                    <Label alignment="CENTER" styleClass="drink-label" text="Шоколадный коктейль" fx:id="name5"/>
                    <Pane HBox.hgrow="ALWAYS" />
                    <Label styleClass="drink-price" text="150р" GridPane.columnIndex="1" fx:id="price5"/>
                </HBox>
-               <HBox styleClass="drink" GridPane.rowIndex="2" GridPane.columnIndex="1" alignment="CENTER" maxWidth="Infinity">
+               <HBox styleClass="drink" GridPane.rowIndex="2" GridPane.columnIndex="1" alignment="CENTER" maxWidth="Infinity" fx:id="drinkPanel6">
                    <Label alignment="CENTER" styleClass="drink-number" text="6" />
                    <Label alignment="CENTER" styleClass="drink-label" text="Ванильный коктейль" fx:id="name6"/>
                    <Pane HBox.hgrow="ALWAYS" />
