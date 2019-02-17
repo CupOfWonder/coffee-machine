@@ -108,6 +108,6 @@
     </columnConstraints>
     <rowConstraints>
         <RowConstraints percentHeight="15.0" vgrow="ALWAYS" />
-        <RowConstraints maxHeight="Infinity" percentHeight="80.0" vgrow="ALWAYS" />
+        <RowConstraints percentHeight="80.0" vgrow="ALWAYS" />
     </rowConstraints>
 </GridPane>

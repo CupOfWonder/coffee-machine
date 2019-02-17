@@ -1,6 +1,10 @@
 .root {
     -fx-background-color: #FFFFFF;
     -fx-font-family: Helvetica, Arial, sans-serif;
+
+    /* Сюда прописать разрешение экрана */
+    -fx-min-width: 1844;
+    -fx-min-height: 924;
 }
 .table-view:focused {
     -fx-background-color: -fx-outer-border, -fx-inner-border, -fx-body-color;
