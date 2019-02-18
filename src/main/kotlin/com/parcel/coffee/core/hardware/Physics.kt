@@ -44,6 +44,7 @@ class Board
             Button(5, arrayListOf(Rele(0, 1, 3), Rele(1, 2, 1), Rele(4, 4, 8)))
     )
 
+    @Expose(serialize = false)
     var buttonMap = HashMap<Int, Button>();
 
     fun generate()
@@ -176,7 +177,10 @@ class Button(@Expose val buttonNumber: Int, @Expose val reles: ArrayList<Rele>)
     @Expose(serialize = false)
     private lateinit var button: GpioPinDigitalInput
 
+    @Expose(serialize = false)
     private var pushHandlers = ArrayList<ButtonPushHandler>()
+
+    @Expose(serialize = false)
     private var workFinishHandlers = ArrayList<WorkFinishHandler>()
 
     //private val listeners = ArrayList<RpiButtonListener>()
