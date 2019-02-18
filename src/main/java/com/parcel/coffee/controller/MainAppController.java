@@ -39,8 +39,7 @@ public class MainAppController {
 	@FXML
 	public void initialize() {
 		initUi();
-		showDrinkIsComplete();
-		//initHardware();
+		initHardware();
 	}
 
 
@@ -84,6 +83,7 @@ public class MainAppController {
 					if(drinkIsBeingMaked) {
 						return;
 					} else {
+						drinkIsBeingMaked = true;
 						startDrinkMaking(finalButtonNum);
 					}
 				}
@@ -91,6 +91,7 @@ public class MainAppController {
 			board.addButtonWorkFinishHandler(buttonNum, new WorkFinishHandler() {
 				@Override
 				public void onWorkFinish() {
+					drinkIsBeingMaked = false;
 					showDrinkIsComplete();
 				}
 			});
