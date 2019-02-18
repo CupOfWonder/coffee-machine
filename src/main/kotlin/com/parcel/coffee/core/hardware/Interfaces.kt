@@ -19,30 +19,30 @@ object Interfaces
     }
 
     private val buttons =  arrayListOf(
-        ButtonProp(0, RaspiPin.GPIO_07),
-        ButtonProp(1, RaspiPin.GPIO_00),
-        ButtonProp(2, RaspiPin.GPIO_02),
-        ButtonProp(3, RaspiPin.GPIO_03),
-        ButtonProp(4, RaspiPin.GPIO_21),
-        ButtonProp(5, RaspiPin.GPIO_22)
+            ButtonProp(0, RaspiPin.GPIO_07),
+            ButtonProp(1, RaspiPin.GPIO_00),
+            ButtonProp(2, RaspiPin.GPIO_02),
+            ButtonProp(3, RaspiPin.GPIO_03),
+            ButtonProp(4, RaspiPin.GPIO_21),
+            ButtonProp(5, RaspiPin.GPIO_22)
     )
 
 
     private val rele =  arrayListOf(
-        ReleProp(0, RaspiPin.GPIO_23),
-        ReleProp(1, RaspiPin.GPIO_24),
-        ReleProp(2, RaspiPin.GPIO_25),
-        ReleProp(3, RaspiPin.GPIO_04),
-        ReleProp(4, RaspiPin.GPIO_05),
-        ReleProp(5, RaspiPin.GPIO_06),
-        ReleProp(6, RaspiPin.GPIO_26),
-        ReleProp(7, RaspiPin.GPIO_27),
-        ReleProp(8, RaspiPin.GPIO_28),
-        ReleProp(9, RaspiPin.GPIO_29),
-        ReleProp(9, RaspiPin.GPIO_01),
-        ReleProp(9, RaspiPin.GPIO_13),
-        ReleProp(9, RaspiPin.GPIO_10),
-        ReleProp(9, RaspiPin.GPIO_11)
+            ReleProp(0, RaspiPin.GPIO_23),
+            ReleProp(1, RaspiPin.GPIO_24),
+            ReleProp(2, RaspiPin.GPIO_25),
+            ReleProp(3, RaspiPin.GPIO_04),
+            ReleProp(4, RaspiPin.GPIO_05),
+            ReleProp(5, RaspiPin.GPIO_06),
+            ReleProp(6, RaspiPin.GPIO_26),
+            ReleProp(7, RaspiPin.GPIO_27),
+            ReleProp(8, RaspiPin.GPIO_28),
+            ReleProp(9, RaspiPin.GPIO_29),
+            ReleProp(10, RaspiPin.GPIO_01),
+            ReleProp(11, RaspiPin.GPIO_13),
+            ReleProp(12, RaspiPin.GPIO_10),
+            ReleProp(13, RaspiPin.GPIO_11)
     )
 
 
