@@ -39,7 +39,7 @@ public class MainAppController {
 	@FXML
 	public void initialize() {
 		initUi();
-		//initHardware();
+		initHardware();
 	}
 
 
