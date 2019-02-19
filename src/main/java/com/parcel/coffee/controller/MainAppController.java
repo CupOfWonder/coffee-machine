@@ -77,7 +77,7 @@ public class MainAppController {
 		for(int buttonNum = 0; buttonNum < 6; buttonNum++) {
 
 			int finalButtonNum = buttonNum;
-			board.addButtonPushHandler(buttonNum, new ButtonPushHandler() {
+			board.setButtonPushHandler(buttonNum, new ButtonPushHandler() {
 				@Override
 				public void onButtonPush() {
 					if(drinkIsBeingMaked) {
@@ -88,7 +88,8 @@ public class MainAppController {
 					}
 				}
 			});
-			board.addButtonWorkFinishHandler(buttonNum, new WorkFinishHandler() {
+			
+			board.setButtonWorkFinishHandler(buttonNum, new WorkFinishHandler() {
 				@Override
 				public void onWorkFinish() {
 					drinkIsBeingMaked = false;

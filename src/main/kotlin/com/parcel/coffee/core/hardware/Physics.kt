@@ -44,7 +44,7 @@ class Board
             Button(5, arrayListOf(Rele(0, 1, 3), Rele(1, 2, 1), Rele(4, 4, 8)))
     )
 
-    @Expose(serialize = false)
+    @Expose(serialize = false, deserialize = false)
     var buttonMap = HashMap<Int, Button>();
 
     fun generate()
@@ -106,6 +106,7 @@ class Board
                 var gson = builder.create()
                 var pgs = gson.fromJson(json, Board().javaClass)
                 this.buttons = pgs.buttons
+
                 refreshButtonMap()
                 return true
             }
@@ -137,19 +138,19 @@ class Board
 
     }
 
-    fun addButtonPushHandler(buttonNum: Int, handler : ButtonPushHandler) {
+    fun setButtonPushHandler(buttonNum: Int, handler : ButtonPushHandler) {
         var button = buttonMap[buttonNum]
 
         if(button != null) {
-            button.addButtonPushHandler(handler)
+            button.setButtonPushHandler(handler)
         }
     }
 
-    fun addButtonWorkFinishHandler(buttonNum: Int, handler : WorkFinishHandler) {
+    fun setButtonWorkFinishHandler(buttonNum: Int, handler : WorkFinishHandler) {
         var button = buttonMap[buttonNum]
 
         if(button != null) {
-            button.addButtonWorkFinishHandler(handler)
+            button.setWorkFinishHandler(handler)
         }
     }
 
@@ -177,11 +178,11 @@ class Button(@Expose val buttonNumber: Int, @Expose val reles: ArrayList<Rele>)
     @Expose(serialize = false)
     private lateinit var button: GpioPinDigitalInput
 
-    @Expose(serialize = false)
-    private var pushHandlers = ArrayList<ButtonPushHandler>()
+    @Expose(serialize = false, deserialize = false)
+    private var pushHandler : ButtonPushHandler? = null
 
-    @Expose(serialize = false)
-    private var workFinishHandlers = ArrayList<WorkFinishHandler>()
+    @Expose(serialize = false, deserialize = false)
+    private var workFinishHandler : WorkFinishHandler? = null
 
     //private val listeners = ArrayList<RpiButtonListener>()
 
@@ -190,13 +191,13 @@ class Button(@Expose val buttonNumber: Int, @Expose val reles: ArrayList<Rele>)
      */
     fun generate()
     {
+        println("started generate!")
+
         val gpio = GpioFactory.getInstance()
         //инициализация кнопки
         pin = CommandArgumentParser.getPin(RaspiPin::class.java, Interfaces.getButtonPin(buttonNumber))
         val pull = CommandArgumentParser.getPinPullResistance(PinPullResistance.PULL_UP)
         button = gpio.provisionDigitalInputPin(pin, pull)
-
-
 
         //инициализация релюх
         for (r in reles)
@@ -214,29 +215,34 @@ class Button(@Expose val buttonNumber: Int, @Expose val reles: ArrayList<Rele>)
                 for (r in reles)
                     r.action(relayFinishLatch)
 
-                firePushHandlers()
+                handlePushHandlers()
 
-                relayFinishLatch.await(120, TimeUnit.SECONDS)
-                fireWorkFinishHandlers()
+                if(relayFinishLatch.await(10, TimeUnit.MINUTES)) {
+                    handleWorkFinishHandler()
+                } else {
+                    println("10 minutes elapsed!")
+                }
+
             }
         })
     }
 
-    private fun fireWorkFinishHandlers() {
-        workFinishHandlers.forEach {it.onWorkFinish() }
+    private fun handleWorkFinishHandler() {
+        workFinishHandler?.onWorkFinish()
     }
 
-    private fun firePushHandlers() {
-        pushHandlers.forEach { it.onButtonPush()}
+    private fun handlePushHandlers() {
+        pushHandler?.onButtonPush()
     }
 
-    fun addButtonPushHandler(handler: ButtonPushHandler) {
-        pushHandlers.add(handler)
+    fun setButtonPushHandler(handler: ButtonPushHandler) {
+        pushHandler = handler
     }
 
-    fun addButtonWorkFinishHandler(handler: WorkFinishHandler) {
-        workFinishHandlers.add(handler);
+    fun setWorkFinishHandler(handler: WorkFinishHandler) {
+        workFinishHandler = handler
     }
+
 
 
 }
