@@ -17,9 +17,9 @@
 <GridPane styleClass="root" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1"
           fx:controller="com.parcel.coffee.controller.AdministrationController" onKeyPressed="#onKey">
     <children>
-        <FlowPane GridPane.rowIndex="0" GridPane.columnIndex="0" alignment="CENTER">
-            <Label styleClass="header" text="Панель администратора" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-        </FlowPane>
+        <HBox GridPane.rowIndex="0" GridPane.columnIndex="0" alignment="CENTER">
+            <Label styleClass="header" text="Панель администратора" />
+        </HBox>
 
         <GridPane hgap="20" vgap="20" GridPane.columnIndex="0" GridPane.rowIndex="1">
             <padding><Insets bottom="25" left="25" right="25" top="25" /></padding>
@@ -96,10 +96,10 @@
                 <ColumnConstraints hgrow="ALWAYS" percentWidth="50.0" />
             </columnConstraints>
             <rowConstraints>
-                <RowConstraints percentHeight="25.0" vgrow="ALWAYS" />
-                <RowConstraints percentHeight="25.0" vgrow="ALWAYS" />
-                <RowConstraints percentHeight="25.0" vgrow="ALWAYS" />
-                <RowConstraints percentHeight="25.0" vgrow="ALWAYS" />
+                <RowConstraints maxHeight="Infinity" percentHeight="25" vgrow="ALWAYS" />
+                <RowConstraints maxHeight="Infinity" percentHeight="25" vgrow="ALWAYS" />
+                <RowConstraints maxHeight="Infinity" percentHeight="25" vgrow="ALWAYS" />
+                <RowConstraints maxHeight="Infinity" percentHeight="25" vgrow="ALWAYS" />
             </rowConstraints>
         </GridPane>
     </children>
@@ -107,7 +107,7 @@
         <ColumnConstraints hgrow="ALWAYS" percentWidth="100.0" />
     </columnConstraints>
     <rowConstraints>
-        <RowConstraints percentHeight="15.0" vgrow="ALWAYS" />
-        <RowConstraints percentHeight="85.0" vgrow="ALWAYS" />
+        <RowConstraints percentHeight="25.0" vgrow="ALWAYS" />
+        <RowConstraints percentHeight="75.0" vgrow="ALWAYS" />
     </rowConstraints>
 </GridPane>

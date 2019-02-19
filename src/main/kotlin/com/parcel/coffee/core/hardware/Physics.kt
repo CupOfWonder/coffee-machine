@@ -191,8 +191,6 @@ class Button(@Expose val buttonNumber: Int, @Expose val reles: ArrayList<Rele>)
      */
     fun generate()
     {
-        println("started generate!")
-
         val gpio = GpioFactory.getInstance()
         //инициализация кнопки
         pin = CommandArgumentParser.getPin(RaspiPin::class.java, Interfaces.getButtonPin(buttonNumber))
