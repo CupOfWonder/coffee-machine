@@ -21,8 +21,7 @@
 
     -fx-font-size: 3em; /* 12 */
     -fx-text-fill: #1852af;
-    -fx-max-width: Infinity;
-    -fx-max-height: Infinity;
+
 }
 
 .drink-active {

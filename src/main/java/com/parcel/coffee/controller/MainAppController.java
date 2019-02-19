@@ -39,7 +39,7 @@ public class MainAppController {
 	@FXML
 	public void initialize() {
 		initUi();
-		initHardware();
+		//initHardware();
 	}
 
 
@@ -88,7 +88,7 @@ public class MainAppController {
 					}
 				}
 			});
-			
+
 			board.setButtonWorkFinishHandler(buttonNum, new WorkFinishHandler() {
 				@Override
 				public void onWorkFinish() {

@@ -1,5 +1,6 @@
 package com.parcel.coffee;
 
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -51,39 +52,32 @@ public class SceneSwitcher {
 	}
 
 	public void switchToMainWindow() {
-		if(stage.isShowing()) {
-			stage.close();
-		}
-		stage.setScene(mainWindow);
-		stage.show();
+		switchToScene(mainWindow);
 	}
 
 	public void switchToLoginWindow() {
-		if(stage.isShowing()) {
-			stage.close();
-		}
-		stage.setScene(loginWindow);
-		stage.setFullScreen(true);
-		stage.show();
+		switchToScene(loginWindow);
 	}
 
 	public void switchToAdministrationPanel() {
-		if(stage.isShowing()) {
-			stage.close();
-		}
-		stage.setScene(administrationWindow);
-		stage.setFullScreen(true);
-		stage.show();
+		switchToScene(administrationWindow);
 	}
 
 	public void switchToChangePasswordWindow() {
-		if(stage.isShowing()) {
-			stage.close();
-		}
-		stage.setScene(changePasswordWindow);
-		stage.setFullScreen(true);
-		stage.show();
+		switchToScene(changePasswordWindow);
 	}
 
+	private void switchToScene(Scene scene) {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				if(stage.isShowing()) {
+					stage.close();
+				}
+				stage.setScene(scene);
+				stage.show();
+			}
+		});
+	}
 
 }
