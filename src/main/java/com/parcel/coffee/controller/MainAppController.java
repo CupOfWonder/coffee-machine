@@ -157,6 +157,7 @@ public class MainAppController {
 			public void run() {
 				drinkReadyLabel.setVisible(false);
 				balanceLabel.setVisible(true);
+				selectDrink(null);
 			}
 		}, DRINK_COMPLETE_SHOW_PERIOD);
 	}
