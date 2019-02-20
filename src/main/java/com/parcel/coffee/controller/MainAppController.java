@@ -70,10 +70,11 @@ public class MainAppController {
 	}
 
 	private void initHardware() {
-		board.generate();
+
 		if(!board.update()) {
 			board.save();
 		}
+		board.generate();
 		for(int buttonNum = 0; buttonNum < 6; buttonNum++) {
 
 			int finalButtonNum = buttonNum;

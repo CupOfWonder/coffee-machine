@@ -54,7 +54,7 @@ class Board
         refreshButtonMap()
     }
 
-    fun refreshButtonMap() {
+    private fun refreshButtonMap() {
         buttons.forEach { buttonMap[it.buttonNumber] = it }
     }
 
@@ -107,7 +107,7 @@ class Board
                 var pgs = gson.fromJson(json, Board().javaClass)
                 this.buttons = pgs.buttons
 
-                refreshButtonMap()
+                //refreshButtonMap()
                 return true
             }
             catch (e: Exception)
@@ -206,7 +206,7 @@ class Button(@Expose val buttonNumber: Int, @Expose val reles: ArrayList<Rele>)
         //подписка на события
         this.button.addListener(GpioPinListenerDigital {
             //value = this.button.isHigh()
-            if(this.button.isHigh() && Processes.buttonPressedProceses.size == 0) {
+            if(this.button.isHigh && Processes.buttonPressedProceses.size == 0) {
                 println("Button $buttonNumber pressed")
 
                 var relayFinishLatch = CountDownLatch(reles.size)
