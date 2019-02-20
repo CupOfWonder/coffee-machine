@@ -29,7 +29,7 @@ public class MainAppController {
 
 	private boolean drinkIsBeingMaked = false;
 
-	private Timer drinkMakingAnimationTimer = new Timer();
+	private Timer drinkMakingAnimationTimer;
 
 	private static final int DRINK_MAKING_BLINK_PERIOD = 700;
 	private static final int DRINK_COMPLETE_SHOW_PERIOD = 1800;
@@ -128,6 +128,7 @@ public class MainAppController {
 	}
 
 	private void startDrinkMakingAnimation() {
+		drinkMakingAnimationTimer = new Timer();
 		drinkMakingAnimationTimer.schedule(new TimerTask() {
 
 			private int i = 0;
@@ -161,7 +162,9 @@ public class MainAppController {
 	}
 
 	private void stopDrinkMakingAnimation() {
-		drinkMakingAnimationTimer.cancel();
+		if(drinkMakingAnimationTimer != null) {
+			drinkMakingAnimationTimer.cancel();
+		}
 	}
 
 	private void readLabelsFromFile() {
