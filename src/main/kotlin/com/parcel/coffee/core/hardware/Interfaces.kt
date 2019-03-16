@@ -15,7 +15,6 @@ object Interfaces
     {
         private val gpio = GpioFactory.getInstance()
         val gpioPinDigitalOutput = gpio.provisionDigitalOutputPin(gpioPin)
-
     }
 
     private val buttons =  arrayListOf(

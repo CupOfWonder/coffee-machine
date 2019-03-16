@@ -18,7 +18,7 @@
        <HBox GridPane.rowIndex="0" GridPane.columnIndex="0" alignment="CENTER" fx:id="balanceLabel">
            <Label alignment="CENTER" styleClass="balance-label" text="Баланс:"/>
            <Pane HBox.hgrow="ALWAYS" />
-           <Label styleClass="balance-value" text="50р" GridPane.columnIndex="1"/>
+           <Label styleClass="balance-value" fx:id="balanceDigitLabel" GridPane.columnIndex="1"/>
        </HBox>
        <HBox GridPane.rowIndex="0" GridPane.columnIndex="0" alignment="CENTER" fx:id="drinkIsMakingLabel" visible="false">
            <Label alignment="CENTER" styleClass="working-label" text="Приготовление"/>

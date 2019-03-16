@@ -1,5 +1,9 @@
 package com.parcel.coffee.controller;
 
+import ITL_SCS_SPO.CURRENCY;
+import ITL_SCS_SPO.SCS_SPO;
+import ITL_SCS_SPO.SCS_SPO_event;
+import ITL_SCS_SPO.SCS_SPO_event_listener;
 import com.parcel.Board;
 import com.parcel.coffee.SceneSwitcher;
 import com.parcel.coffee.core.drinks.Drink;
@@ -8,6 +12,7 @@ import com.parcel.coffee.core.events.DrinkListChangeHandler;
 import com.parcel.coffee.core.events.EventBus;
 import com.parcel.coffee.core.hardware.helpers.ButtonPushHandler;
 import com.parcel.coffee.core.hardware.helpers.WorkFinishHandler;
+import com.parcel.coffee.core.payment.Balance;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -16,9 +21,11 @@ import javafx.scene.layout.HBox;
 
 import java.util.*;
 
-public class MainAppController {
+import static com.parcel.coffee.core.utils.CurrencyUtils.doubleToCurrency;
 
-	public Label name1, name2, name3, name4, name5, name6, price1, price2, price3, price4, price5, price6;
+public class MainAppController implements SCS_SPO_event_listener {
+
+	public Label name1, name2, name3, name4, name5, name6, price1, price2, price3, price4, price5, price6, balanceDigitLabel;
 	public HBox drinkIsMakingLabel, drinkReadyLabel, balanceLabel;
 	public HBox drinkPanel1, drinkPanel2, drinkPanel3, drinkPanel4, drinkPanel5, drinkPanel6;
 
@@ -26,6 +33,7 @@ public class MainAppController {
 	private Map<Integer, HBox> buttonPanelMap = new HashMap<>();
 
 	private Board board = new Board();
+	private SCS_SPO billAcceptor;
 
 	private boolean drinkIsBeingMaked = false;
 
@@ -34,7 +42,10 @@ public class MainAppController {
 	private static final int DRINK_MAKING_BLINK_PERIOD = 700;
 	private static final int DRINK_COMPLETE_SHOW_PERIOD = 1800;
 
-	private Integer selectedDrink;
+	private Integer selectedDrinkNum;
+	private Map<Integer, Drink> shownDrinkMap = new HashMap<>();
+
+	private Balance balance = new Balance();
 
 	@FXML
 	public void initialize() {
@@ -67,17 +78,22 @@ public class MainAppController {
 		});
 
 		readLabelsFromFile();
+
 	}
 
 	private void initHardware() {
+		//initBoard();
+		initPaymentSystem();
+	}
 
+	private void initBoard() {
 		if(!board.update()) {
 			board.save();
 		}
 		board.generate();
 		for(int buttonNum = 0; buttonNum < 6; buttonNum++) {
 
-			int finalButtonNum = buttonNum;
+			int drinkNumber = buttonNum;
 			board.setButtonPushHandler(buttonNum, new ButtonPushHandler() {
 				@Override
 				public void onButtonPush() {
@@ -85,7 +101,8 @@ public class MainAppController {
 						return;
 					} else {
 						drinkIsBeingMaked = true;
-						startDrinkMaking(finalButtonNum);
+						selectDrink(drinkNumber);
+						tryStartToMakeSelectedDrink();
 					}
 				}
 			});
@@ -94,10 +111,31 @@ public class MainAppController {
 				@Override
 				public void onWorkFinish() {
 					drinkIsBeingMaked = false;
-					showDrinkIsComplete();
+					handleDrinkCompletion();
 				}
 			});
 		}
+	}
+
+	private void initPaymentSystem() {
+		billAcceptor = new SCS_SPO(null, this);
+		refreshBalanceWidget();
+	}
+
+	private void tryStartToMakeSelectedDrink() {
+		if(selectedDrinkNum != null) {
+			Drink drink = shownDrinkMap.get(selectedDrinkNum);
+
+			if(drink == null) {
+				return;
+			}
+
+			int price = drink.getPrice();
+			if(balance.checkHasEnoughForBuy(price)) {
+				startDrinkMaking(selectedDrinkNum);
+			}
+		}
+
 	}
 
 	private void startDrinkMaking(int buttonNum) {
@@ -110,15 +148,15 @@ public class MainAppController {
 	}
 
 	private void selectDrink(Integer drinkNum) {
-		if(selectedDrink != null) {
-			unselectDrink(selectedDrink);
+		if(selectedDrinkNum != null) {
+			unselectDrink(selectedDrinkNum);
 		}
 		if(drinkNum != null) {
 			HBox panel = buttonPanelMap.get(drinkNum);
 			panel.getStyleClass().remove("drink");
 			panel.getStyleClass().add("drink-active");
 		}
-		selectedDrink = drinkNum;
+		selectedDrinkNum = drinkNum;
 	}
 
 	private void unselectDrink(Integer drinkNum) {
@@ -146,7 +184,9 @@ public class MainAppController {
 		}, 0, DRINK_MAKING_BLINK_PERIOD);
 	}
 
-	private void showDrinkIsComplete() {
+	private void handleDrinkCompletion() {
+		giveCoinChange();
+
 		stopDrinkMakingAnimation();
 		balanceLabel.setVisible(false);
 		drinkIsMakingLabel.setVisible(false);
@@ -160,6 +200,12 @@ public class MainAppController {
 				selectDrink(null);
 			}
 		}, DRINK_COMPLETE_SHOW_PERIOD);
+	}
+
+	//Функция дает сдачу
+	private void giveCoinChange() {
+		billAcceptor.UnInhibitCoin(doubleToCurrency(balance.getBalance()));
+		balance.reset();
 	}
 
 	private void stopDrinkMakingAnimation() {
@@ -178,6 +224,8 @@ public class MainAppController {
 
 			labelPair.setName(drink.getName());
 			labelPair.setPrice(drink.getPrice());
+
+			shownDrinkMap.put(i, drink);
 		}
 	}
 
@@ -185,6 +233,22 @@ public class MainAppController {
 		if(mouseEvent.getClickCount() == 2) {
 			SceneSwitcher.getInstance().switchToLoginWindow();
 		}
+	}
+
+	@Override
+	public void SCS_SPO_Event_Occurred(SCS_SPO_event scs_spo_event, CURRENCY currency) {
+		switch (scs_spo_event) {
+			case ev_NOTE_STACKED:
+				int roubles = (int) currency.value;
+				balance.addToBalance(roubles);
+				refreshBalanceWidget();
+				tryStartToMakeSelectedDrink();
+		}
+	}
+
+	private void refreshBalanceWidget() {
+		int roubles = balance.getBalance();
+		balanceDigitLabel.setText(roubles+" р");
 	}
 
 	private class DrinkLabelPair {
