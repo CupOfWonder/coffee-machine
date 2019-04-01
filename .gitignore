@@ -7,3 +7,5 @@ out
 
 .idea/**
 *.yml
+
+coffee-machine.log

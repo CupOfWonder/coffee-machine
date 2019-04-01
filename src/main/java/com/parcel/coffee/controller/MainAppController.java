@@ -1,9 +1,5 @@
 package com.parcel.coffee.controller;
 
-import ITL_SCS_SPO.CURRENCY;
-import ITL_SCS_SPO.SCS_SPO;
-import ITL_SCS_SPO.SCS_SPO_event;
-import ITL_SCS_SPO.SCS_SPO_event_listener;
 import com.parcel.Board;
 import com.parcel.coffee.SceneSwitcher;
 import com.parcel.coffee.core.drinks.Drink;
@@ -13,31 +9,37 @@ import com.parcel.coffee.core.events.EventBus;
 import com.parcel.coffee.core.hardware.helpers.ButtonPushHandler;
 import com.parcel.coffee.core.hardware.helpers.WorkFinishHandler;
 import com.parcel.coffee.core.payment.Balance;
+import com.parcel.payment.parts.PaymentSystem;
+import com.parcel.payment.parts.events.PaymentSystemEvent;
+import com.parcel.payment.parts.events.PaymentSystemEventHandler;
+import com.parcel.payment.parts.hardware.billacceptor.factory.BillAcceptorType;
+import com.parcel.payment.parts.hardware.hopper.factory.HopperType;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import org.apache.log4j.Logger;
 
 import java.util.*;
 
-import static com.parcel.coffee.core.utils.CurrencyUtils.doubleToCurrency;
+public class MainAppController {
 
-public class MainAppController implements SCS_SPO_event_listener {
+	private Logger logger = Logger.getLogger(MainAppController.class);
 
-	public Label name1, name2, name3, name4, name5, name6, price1, price2, price3, price4, price5, price6, balanceDigitLabel;
-	public HBox drinkIsMakingLabel, drinkReadyLabel, balanceLabel;
+	public Label name1, name2, name3, name4, name5, name6, price1, price2, price3, price4, price5, price6,
+			balanceDigitLabel, shortMessageLabel, blinkingMessageLabel;
+	public HBox blinkingMessagePanel, shortMessagePanel, balanceLabel;
 	public HBox drinkPanel1, drinkPanel2, drinkPanel3, drinkPanel4, drinkPanel5, drinkPanel6;
 
 	private List<DrinkLabelPair> drinkLabelPairs = new ArrayList<>();
 	private Map<Integer, HBox> buttonPanelMap = new HashMap<>();
 
 	private Board board = new Board();
-	private SCS_SPO billAcceptor;
 
 	private boolean drinkIsBeingMaked = false;
 
-	private Timer drinkMakingAnimationTimer;
+	private Timer blinkingMessageTimer;
 
 	private static final int DRINK_MAKING_BLINK_PERIOD = 700;
 	private static final int DRINK_COMPLETE_SHOW_PERIOD = 1800;
@@ -46,6 +48,10 @@ public class MainAppController implements SCS_SPO_event_listener {
 	private Map<Integer, Drink> shownDrinkMap = new HashMap<>();
 
 	private Balance balance = new Balance();
+	private PaymentSystem paymentSystem = new PaymentSystem();
+
+	private static final String DRINK_IS_MAKING_MSG = "Приготовление";
+	private static final String DRINK_IS_READY_MSG = "Готово!";
 
 	@FXML
 	public void initialize() {
@@ -78,7 +84,7 @@ public class MainAppController implements SCS_SPO_event_listener {
 		});
 
 		readLabelsFromFile();
-
+		selectDrink(0);
 	}
 
 	private void initHardware() {
@@ -118,7 +124,32 @@ public class MainAppController implements SCS_SPO_event_listener {
 	}
 
 	private void initPaymentSystem() {
-		billAcceptor = new SCS_SPO(null, this);
+
+		paymentSystem = new PaymentSystem();
+		paymentSystem.setBillAcceptorType(BillAcceptorType.SSP_BILL_ACCEPTOR);
+		paymentSystem.setHopperType(HopperType.SSP_HOPPER);
+		paymentSystem.init();
+
+		paymentSystem.addEventHandler(new PaymentSystemEventHandler() {
+			@Override
+			public void onEvent(PaymentSystemEvent event) {
+				switch (event.getType()) {
+					case CASH_INCOME:
+						balance.addToBalance(event.getMoneyAmount());
+						refreshBalanceWidget();
+						tryStartToMakeSelectedDrink();
+						break;
+					case MONEY_DISPENSE_SUCCESS:
+					case HOPPER_NO_MONEY:
+					case HOPPER_NOT_EXACT_AMOUNT:
+						balance.reset();
+						refreshBalanceWidget();
+						break;
+
+
+				}
+			}
+		});
 		refreshBalanceWidget();
 	}
 
@@ -132,19 +163,23 @@ public class MainAppController implements SCS_SPO_event_listener {
 
 			int price = drink.getPrice();
 			if(balance.checkHasEnoughForBuy(price)) {
+				balance.substractFromBalance(price);
+				//giveCoinsWithoutDrinkMaking(selectedDrinkNum);	//Команда для теста без платы для изготовления
 				startDrinkMaking(selectedDrinkNum);
 			}
 		}
 
 	}
 
-	private void startDrinkMaking(int buttonNum) {
-		balanceLabel.setVisible(false);
-		drinkReadyLabel.setVisible(false);
-		drinkIsMakingLabel.setVisible(true);
-
+	private void giveCoinsWithoutDrinkMaking(int buttonNum) {
 		selectDrink(buttonNum);
-		startDrinkMakingAnimation();
+		giveCoinChange();
+		selectDrink(null);
+	}
+
+	private void startDrinkMaking(int buttonNum) {
+		selectDrink(buttonNum);
+		showBlinkingMessage(DRINK_IS_MAKING_MSG);
 	}
 
 	private void selectDrink(Integer drinkNum) {
@@ -165,19 +200,25 @@ public class MainAppController implements SCS_SPO_event_listener {
 		panel.getStyleClass().add("drink");
 	}
 
-	private void startDrinkMakingAnimation() {
-		drinkMakingAnimationTimer = new Timer();
-		drinkMakingAnimationTimer.schedule(new TimerTask() {
+	private void showBlinkingMessage(String message) {
+		balanceLabel.setVisible(false);
+		shortMessagePanel.setVisible(false);
+		blinkingMessagePanel.setVisible(true);
 
-			private int i = 0;
+		blinkingMessageLabel.setText(message);
+
+		blinkingMessageTimer = new Timer();
+		blinkingMessageTimer.schedule(new TimerTask() {
+
+			private boolean on = true;
 
 			@Override
 			public void run() {
 				Platform.runLater(new Runnable() {
 					@Override
 					public void run() {
-						drinkIsMakingLabel.setVisible(i % 2 == 0);
-						i++;
+						blinkingMessagePanel.setVisible(on);
+						on = !on;
 					}
 				});
 			}
@@ -186,16 +227,19 @@ public class MainAppController implements SCS_SPO_event_listener {
 
 	private void handleDrinkCompletion() {
 		giveCoinChange();
+		stopBlinkingMessageAnimation();
+		showShortMessage(DRINK_IS_READY_MSG);
+	}
 
-		stopDrinkMakingAnimation();
+	private void showShortMessage(String message) {
 		balanceLabel.setVisible(false);
-		drinkIsMakingLabel.setVisible(false);
-		drinkReadyLabel.setVisible(true);
+		blinkingMessagePanel.setVisible(false);
+		shortMessagePanel.setVisible(true);
 		Timer timer = new Timer();
 		timer.schedule(new TimerTask() {
 			@Override
 			public void run() {
-				drinkReadyLabel.setVisible(false);
+				shortMessagePanel.setVisible(false);
 				balanceLabel.setVisible(true);
 				selectDrink(null);
 			}
@@ -204,13 +248,14 @@ public class MainAppController implements SCS_SPO_event_listener {
 
 	//Функция дает сдачу
 	private void giveCoinChange() {
-		billAcceptor.UnInhibitCoin(doubleToCurrency(balance.getBalance()));
-		balance.reset();
+
+		paymentSystem.dispenseMoney(balance.getBalance());
+		refreshBalanceWidget();
 	}
 
-	private void stopDrinkMakingAnimation() {
-		if(drinkMakingAnimationTimer != null) {
-			drinkMakingAnimationTimer.cancel();
+	private void stopBlinkingMessageAnimation() {
+		if(blinkingMessageTimer != null) {
+			blinkingMessageTimer.cancel();
 		}
 	}
 
@@ -235,20 +280,16 @@ public class MainAppController implements SCS_SPO_event_listener {
 		}
 	}
 
-	@Override
-	public void SCS_SPO_Event_Occurred(SCS_SPO_event scs_spo_event, CURRENCY currency) {
-		switch (scs_spo_event) {
-			case ev_NOTE_STACKED:
-				int roubles = (int) currency.value;
-				balance.addToBalance(roubles);
-				refreshBalanceWidget();
-				tryStartToMakeSelectedDrink();
-		}
-	}
+
 
 	private void refreshBalanceWidget() {
-		int roubles = balance.getBalance();
-		balanceDigitLabel.setText(roubles+" р");
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				int roubles = balance.getBalance();
+				balanceDigitLabel.setText(roubles+" р");
+			}
+		});
 	}
 
 	private class DrinkLabelPair {

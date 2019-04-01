@@ -20,21 +20,21 @@ public class SceneSwitcher {
 
 	private SceneSwitcher() {
 		try {
-			Parent mainWindowRoot = FXMLLoader.load(getClass().getClassLoader().getResource("MainWindow.fxml"));
+			Parent mainWindowRoot = FXMLLoader.load(getClass().getClassLoader().getResource("ui/MainWindow.fxml"));
 			mainWindow = new Scene(mainWindowRoot);
-			mainWindow.getStylesheets().add(getClass().getClassLoader().getResource("style.css").toExternalForm());
+			mainWindow.getStylesheets().add(getClass().getClassLoader().getResource("ui/style.css").toExternalForm());
 
-			Parent secondSceneRoot = FXMLLoader.load(getClass().getClassLoader().getResource("LoginWindow.fxml"));
+			Parent secondSceneRoot = FXMLLoader.load(getClass().getClassLoader().getResource("ui/LoginWindow.fxml"));
 			loginWindow = new Scene(secondSceneRoot);
-			loginWindow.getStylesheets().add(getClass().getClassLoader().getResource("style.css").toExternalForm());
+			loginWindow.getStylesheets().add(getClass().getClassLoader().getResource("ui/style.css").toExternalForm());
 
-			Parent administrationRoot = FXMLLoader.load(getClass().getClassLoader().getResource("AdministrationPanel.fxml"));
+			Parent administrationRoot = FXMLLoader.load(getClass().getClassLoader().getResource("ui/AdministrationPanel.fxml"));
 			administrationWindow = new Scene(administrationRoot);
-			administrationWindow.getStylesheets().add(getClass().getClassLoader().getResource("style.css").toExternalForm());
+			administrationWindow.getStylesheets().add(getClass().getClassLoader().getResource("ui/style.css").toExternalForm());
 
-			Parent changePasswordRoot = FXMLLoader.load(getClass().getClassLoader().getResource("ChangePasswordWindow.fxml"));
+			Parent changePasswordRoot = FXMLLoader.load(getClass().getClassLoader().getResource("ui/ChangePasswordWindow.fxml"));
 			changePasswordWindow = new Scene(changePasswordRoot);
-			changePasswordWindow.getStylesheets().add(getClass().getClassLoader().getResource("style.css").toExternalForm());
+			changePasswordWindow.getStylesheets().add(getClass().getClassLoader().getResource("ui/style.css").toExternalForm());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

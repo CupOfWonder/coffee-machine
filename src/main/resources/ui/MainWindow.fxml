@@ -20,11 +20,11 @@
            <Pane HBox.hgrow="ALWAYS" />
            <Label styleClass="balance-value" fx:id="balanceDigitLabel" GridPane.columnIndex="1"/>
        </HBox>
-       <HBox GridPane.rowIndex="0" GridPane.columnIndex="0" alignment="CENTER" fx:id="drinkIsMakingLabel" visible="false">
-           <Label alignment="CENTER" styleClass="working-label" text="Приготовление"/>
+       <HBox GridPane.rowIndex="0" GridPane.columnIndex="0" alignment="CENTER" fx:id="blinkingMessagePanel" visible="false">
+           <Label alignment="CENTER" styleClass="working-label" fx:id="blinkingMessageLabel" />
        </HBox>
-       <HBox GridPane.rowIndex="0" GridPane.columnIndex="0" alignment="CENTER" fx:id="drinkReadyLabel" visible="false">
-           <Label alignment="CENTER" styleClass="working-label" text="Готово!"/>
+       <HBox GridPane.rowIndex="0" GridPane.columnIndex="0" alignment="CENTER" fx:id="shortMessagePanel" visible="false">
+           <Label alignment="CENTER" styleClass="working-label" fx:id="shortMessageLabel" />
        </HBox>
 
        <GridPane hgap="20" vgap="20" GridPane.columnIndex="0" GridPane.rowIndex="1">

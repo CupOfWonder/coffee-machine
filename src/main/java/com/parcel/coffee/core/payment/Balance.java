@@ -11,6 +11,10 @@ public class Balance {
 		return value >= price;
 	}
 
+	public void substractFromBalance(int price) {
+		value -= price;
+	}
+
 	public void reset() {
 		value = 0;
 	}
