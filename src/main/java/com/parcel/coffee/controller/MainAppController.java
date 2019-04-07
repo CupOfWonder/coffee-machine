@@ -13,6 +13,7 @@ import com.parcel.payment.parts.PaymentSystem;
 import com.parcel.payment.parts.events.PaymentSystemEvent;
 import com.parcel.payment.parts.events.PaymentSystemEventHandler;
 import com.parcel.payment.parts.hardware.billacceptor.factory.BillAcceptorType;
+import com.parcel.payment.parts.hardware.coinacceptor.factory.CoinAcceptorType;
 import com.parcel.payment.parts.hardware.hopper.factory.HopperType;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -37,7 +38,7 @@ public class MainAppController {
 
 	private Board board = new Board();
 
-	private boolean drinkIsBeingMaked = false;
+	private boolean drinkIsBeingMade = false;
 
 	private Timer blinkingMessageTimer;
 
@@ -52,6 +53,7 @@ public class MainAppController {
 
 	private static final String DRINK_IS_MAKING_MSG = "Приготовление";
 	private static final String DRINK_IS_READY_MSG = "Готово!";
+	private static final String HOPPER_NO_MONEY_MSG = "Отсутствуют монеты для сдачи";
 
 	@FXML
 	public void initialize() {
@@ -88,7 +90,7 @@ public class MainAppController {
 	}
 
 	private void initHardware() {
-		//initBoard();
+		initBoard();
 		initPaymentSystem();
 	}
 
@@ -103,10 +105,10 @@ public class MainAppController {
 			board.setButtonPushHandler(buttonNum, new ButtonPushHandler() {
 				@Override
 				public void onButtonPush() {
-					if(drinkIsBeingMaked) {
+					if(drinkIsBeingMade) {
 						return;
 					} else {
-						drinkIsBeingMaked = true;
+						drinkIsBeingMade = true;
 						selectDrink(drinkNumber);
 						tryStartToMakeSelectedDrink();
 					}
@@ -116,7 +118,7 @@ public class MainAppController {
 			board.setButtonWorkFinishHandler(buttonNum, new WorkFinishHandler() {
 				@Override
 				public void onWorkFinish() {
-					drinkIsBeingMaked = false;
+					drinkIsBeingMade = false;
 					handleDrinkCompletion();
 				}
 			});
@@ -128,13 +130,14 @@ public class MainAppController {
 		paymentSystem = new PaymentSystem();
 		paymentSystem.setBillAcceptorType(BillAcceptorType.SSP_BILL_ACCEPTOR);
 		paymentSystem.setHopperType(HopperType.SSP_HOPPER);
+		paymentSystem.setCoinAcceptorType(CoinAcceptorType.IMPULSE);
 		paymentSystem.init();
 
 		paymentSystem.addEventHandler(new PaymentSystemEventHandler() {
 			@Override
 			public void onEvent(PaymentSystemEvent event) {
 				switch (event.getType()) {
-					case CASH_INCOME:
+					case MONEY_INCOME:
 						balance.addToBalance(event.getMoneyAmount());
 						refreshBalanceWidget();
 						tryStartToMakeSelectedDrink();
@@ -142,8 +145,10 @@ public class MainAppController {
 					case MONEY_DISPENSE_SUCCESS:
 					case HOPPER_NO_MONEY:
 					case HOPPER_NOT_EXACT_AMOUNT:
+						showShortMessage(HOPPER_NO_MONEY_MSG);
 						balance.reset();
 						refreshBalanceWidget();
+
 						break;
 
 
@@ -229,19 +234,21 @@ public class MainAppController {
 		giveCoinChange();
 		stopBlinkingMessageAnimation();
 		showShortMessage(DRINK_IS_READY_MSG);
+		selectDrink(null);
 	}
 
 	private void showShortMessage(String message) {
 		balanceLabel.setVisible(false);
 		blinkingMessagePanel.setVisible(false);
 		shortMessagePanel.setVisible(true);
+		shortMessageLabel.setText(message);
+
 		Timer timer = new Timer();
 		timer.schedule(new TimerTask() {
 			@Override
 			public void run() {
 				shortMessagePanel.setVisible(false);
 				balanceLabel.setVisible(true);
-				selectDrink(null);
 			}
 		}, DRINK_COMPLETE_SHOW_PERIOD);
 	}
@@ -277,6 +284,8 @@ public class MainAppController {
 	public void onMouse(MouseEvent mouseEvent) {
 		if(mouseEvent.getClickCount() == 2) {
 			SceneSwitcher.getInstance().switchToLoginWindow();
+		} else {
+			showShortMessage(HOPPER_NO_MONEY_MSG);
 		}
 	}
 
