@@ -28,9 +28,14 @@ public class MainAppController {
 
 	private Logger logger = Logger.getLogger(MainAppController.class);
 
+	@FXML
 	public Label name1, name2, name3, name4, name5, name6, price1, price2, price3, price4, price5, price6,
 			balanceDigitLabel, shortMessageLabel, blinkingMessageLabel;
+
+	@FXML
 	public HBox blinkingMessagePanel, shortMessagePanel, balanceLabel;
+
+	@FXML
 	public HBox drinkPanel1, drinkPanel2, drinkPanel3, drinkPanel4, drinkPanel5, drinkPanel6;
 
 	private List<DrinkLabelPair> drinkLabelPairs = new ArrayList<>();
@@ -86,7 +91,6 @@ public class MainAppController {
 		});
 
 		readLabelsFromFile();
-		selectDrink(0);
 	}
 
 	private void initHardware() {
@@ -108,7 +112,6 @@ public class MainAppController {
 					if(drinkIsBeingMade) {
 						return;
 					} else {
-						drinkIsBeingMade = true;
 						selectDrink(drinkNumber);
 						tryStartToMakeSelectedDrink();
 					}
@@ -143,6 +146,7 @@ public class MainAppController {
 						tryStartToMakeSelectedDrink();
 						break;
 					case MONEY_DISPENSE_SUCCESS:
+						break;
 					case HOPPER_NO_MONEY:
 					case HOPPER_NOT_EXACT_AMOUNT:
 						showShortMessage(HOPPER_NO_MONEY_MSG);
@@ -159,6 +163,7 @@ public class MainAppController {
 	}
 
 	private void tryStartToMakeSelectedDrink() {
+		System.out.println("Trying to start to make drink "+selectedDrinkNum);
 		if(selectedDrinkNum != null) {
 			Drink drink = shownDrinkMap.get(selectedDrinkNum);
 
@@ -183,37 +188,58 @@ public class MainAppController {
 	}
 
 	private void startDrinkMaking(int buttonNum) {
+		drinkIsBeingMade = true;
 		selectDrink(buttonNum);
-		board.executeButtonScript(buttonNum);
 		showBlinkingMessage(DRINK_IS_MAKING_MSG);
+		board.executeButtonScript(buttonNum);
 	}
 
 	private void selectDrink(Integer drinkNum) {
+		
 		if(selectedDrinkNum != null) {
 			unselectDrink(selectedDrinkNum);
 		}
-		if(drinkNum != null) {
-			HBox panel = buttonPanelMap.get(drinkNum);
-			panel.getStyleClass().remove("drink");
-			panel.getStyleClass().add("drink-active");
-		}
+
 		selectedDrinkNum = drinkNum;
+
+		Platform.runLater(new Runnable() {
+			
+			public void run() {
+				if(drinkNum != null) {
+					HBox panel = buttonPanelMap.get(drinkNum);
+					panel.getStyleClass().remove("drink");
+					panel.getStyleClass().add("drink-active");
+				}
+			}
+		});
 	}
 
 	private void unselectDrink(Integer drinkNum) {
-		HBox panel = buttonPanelMap.get(drinkNum);
-		panel.getStyleClass().remove("drink-active");
-		panel.getStyleClass().add("drink");
+		Platform.runLater(new Runnable() {
+			public void run() {
+				HBox panel = buttonPanelMap.get(drinkNum);
+				panel.getStyleClass().remove("drink-active");
+				panel.getStyleClass().add("drink");
+			}
+		});
 	}
 
 	private void showBlinkingMessage(String message) {
-		balanceLabel.setVisible(false);
-		shortMessagePanel.setVisible(false);
-		blinkingMessagePanel.setVisible(true);
+		System.out.println("Showing blinking message");
+		Platform.runLater(new Runnable() {
+			public void run() {
 
-		blinkingMessageLabel.setText(message);
+				balanceLabel.setVisible(false);
+				shortMessagePanel.setVisible(false);
+				blinkingMessagePanel.setVisible(true);
 
+				blinkingMessageLabel.setText(message);
+			}
+
+		});
+	
 		blinkingMessageTimer = new Timer();
+
 		blinkingMessageTimer.schedule(new TimerTask() {
 
 			private boolean on = true;
@@ -239,25 +265,34 @@ public class MainAppController {
 	}
 
 	private void showShortMessage(String message) {
-		balanceLabel.setVisible(false);
-		blinkingMessagePanel.setVisible(false);
-		shortMessagePanel.setVisible(true);
-		shortMessageLabel.setText(message);
+		Platform.runLater(new Runnable() {
+			public void run() {
+
+				balanceLabel.setVisible(false);
+				blinkingMessagePanel.setVisible(false);
+				shortMessagePanel.setVisible(true);
+				shortMessageLabel.setText(message);
+			}
+		});
 
 		Timer timer = new Timer();
 		timer.schedule(new TimerTask() {
 			@Override
 			public void run() {
-				shortMessagePanel.setVisible(false);
-				balanceLabel.setVisible(true);
+				Platform.runLater(new Runnable() {
+					public void run() {
+						shortMessagePanel.setVisible(false);
+						balanceLabel.setVisible(true);
+					}
+				});
 			}
 		}, DRINK_COMPLETE_SHOW_PERIOD);
 	}
 
 	//Функция дает сдачу
 	private void giveCoinChange() {
-
 		paymentSystem.dispenseMoney(balance.getBalance());
+		balance.reset();
 		refreshBalanceWidget();
 	}
 
@@ -286,7 +321,7 @@ public class MainAppController {
 		if(mouseEvent.getClickCount() == 2) {
 			SceneSwitcher.getInstance().switchToLoginWindow();
 		} else {
-			showShortMessage(HOPPER_NO_MONEY_MSG);
+			showBlinkingMessage(HOPPER_NO_MONEY_MSG);
 		}
 	}
 

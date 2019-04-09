@@ -4,7 +4,7 @@
 
     /* Сюда прописать разрешение экрана */
     -fx-min-width: 1844;
-    -fx-min-height: 924;
+    -fx-min-height: 980;
 }
 .table-view:focused {
     -fx-background-color: -fx-outer-border, -fx-inner-border, -fx-body-color;
