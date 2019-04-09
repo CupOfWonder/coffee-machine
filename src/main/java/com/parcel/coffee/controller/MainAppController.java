@@ -184,6 +184,7 @@ public class MainAppController {
 
 	private void startDrinkMaking(int buttonNum) {
 		selectDrink(buttonNum);
+		board.executeButtonScript(buttonNum);
 		showBlinkingMessage(DRINK_IS_MAKING_MSG);
 	}
 

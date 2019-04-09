@@ -11,7 +11,6 @@ import java.io.File
 import java.util.*
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
-import kotlin.collections.ArrayList
 
 /**
  * объеккт для хранения информации о запущенных потоках.
@@ -154,6 +153,14 @@ class Board
         }
     }
 
+    fun executeButtonScript(buttonNum: Int) {
+        var button = buttonMap[buttonNum];
+
+        if(button != null) {
+            button.executeButtonScript();
+        }
+    }
+
 
 }
 
@@ -209,20 +216,21 @@ class Button(@Expose val buttonNumber: Int, @Expose val reles: ArrayList<Rele>)
             if(this.button.isHigh && Processes.buttonPressedProceses.size == 0) {
                 println("Button $buttonNumber pressed")
 
-                var relayFinishLatch = CountDownLatch(reles.size)
-                for (r in reles)
-                    r.action(relayFinishLatch)
-
-                handlePushHandlers()
-
-                if(relayFinishLatch.await(10, TimeUnit.MINUTES)) {
-                    handleWorkFinishHandler()
-                } else {
-                    println("10 minutes elapsed!")
-                }
-
+                handlePushHandlers();
             }
         })
+    }
+
+    fun executeButtonScript() {
+        var relayFinishLatch = CountDownLatch(reles.size)
+        for (r in reles)
+            r.action(relayFinishLatch)
+
+        if(relayFinishLatch.await(10, TimeUnit.MINUTES)) {
+            handleWorkFinishHandler()
+        } else {
+            println("10 minutes elapsed!")
+        }
     }
 
     private fun handleWorkFinishHandler() {
