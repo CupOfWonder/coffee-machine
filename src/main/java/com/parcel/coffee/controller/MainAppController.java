@@ -291,9 +291,11 @@ public class MainAppController {
 
 	//Функция дает сдачу
 	private void giveCoinChange() {
-		paymentSystem.dispenseMoney(balance.getBalance());
-		balance.reset();
-		refreshBalanceWidget();
+		if(balance.getBalance() > 0) {
+			paymentSystem.dispenseMoney(balance.getBalance());
+			balance.reset();
+			refreshBalanceWidget();
+		}
 	}
 
 	private void stopBlinkingMessageAnimation() {
@@ -320,11 +322,8 @@ public class MainAppController {
 	public void onMouse(MouseEvent mouseEvent) {
 		if(mouseEvent.getClickCount() == 2) {
 			SceneSwitcher.getInstance().switchToLoginWindow();
-		} else {
-			showBlinkingMessage(HOPPER_NO_MONEY_MSG);
 		}
 	}
-
 
 
 	private void refreshBalanceWidget() {
