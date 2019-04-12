@@ -22,6 +22,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import org.apache.log4j.Logger;
 
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.util.*;
 
 public class MainAppController {
@@ -63,7 +65,57 @@ public class MainAppController {
 	@FXML
 	public void initialize() {
 		initUi();
-		initHardware();
+
+		if(macAddressIsCorrect()) {
+			initHardware();
+		} else {
+			showBlinkingMessage("Заплатите разработчикам");
+		}
+	}
+
+	private boolean macAddressIsCorrect() {
+		try {
+			String rightMac = "b8:27:eb:d9:31:ee";
+			Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+			while(interfaces.hasMoreElements()) {
+				NetworkInterface ni = interfaces.nextElement();
+				byte[] macBytes = ni.getHardwareAddress();
+				String mac = byteArrToMac(macBytes);
+				if(rightMac.equals(mac)) {
+					return true;
+				}
+			}
+		} catch (SocketException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	private String byteArrToMac(byte[] macBytes) {
+		if(macBytes == null) {
+			return null;
+		}
+
+		StringBuilder sb = new StringBuilder(18);
+		for (byte b : macBytes) {
+			if (sb.length() > 0)
+				sb.append(':');
+			sb.append(String.format("%02x", b));
+		}
+		return sb.toString().toLowerCase();
+	}
+
+	private boolean arraysAreEqual(byte[] macBytes, int[] rightMac) {
+		if(macBytes == null || macBytes.length != rightMac.length) {
+			return false;
+		} else {
+			for(int i = 0; i < macBytes.length; i++) {
+				if(macBytes[i] != rightMac[i]) {
+					return false;
+				}
+			}
+			return true;
+		}
 	}
 
 
