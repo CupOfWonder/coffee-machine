@@ -9,6 +9,7 @@ import com.parcel.coffee.core.events.EventBus;
 import com.parcel.coffee.core.hardware.helpers.ButtonPushHandler;
 import com.parcel.coffee.core.hardware.helpers.WorkFinishHandler;
 import com.parcel.coffee.core.payment.Balance;
+import com.parcel.coffee.core.payment.CoinAmountRefresher;
 import com.parcel.payment.parts.PaymentSystem;
 import com.parcel.payment.parts.events.PaymentSystemEvent;
 import com.parcel.payment.parts.events.PaymentSystemEventHandler;
@@ -55,10 +56,13 @@ public class MainAppController {
 
 	private Balance balance = new Balance();
 	private PaymentSystem paymentSystem = new PaymentSystem();
+	private CoinAmountRefresher refresher;
 
 	private static final String DRINK_IS_MAKING_MSG = "Приготовление";
 	private static final String DRINK_IS_READY_MSG = "Готово!";
 	private static final String HOPPER_NO_MONEY_MSG = "Отсутствуют монеты для сдачи";
+
+
 
 	@FXML
 	public void initialize() {
@@ -94,7 +98,7 @@ public class MainAppController {
 	}
 
 	private void initHardware() {
-		initBoard();
+		//initBoard();
 		initPaymentSystem();
 	}
 
@@ -160,6 +164,12 @@ public class MainAppController {
 			}
 		});
 		refreshBalanceWidget();
+		launchCoinAmountRefresher(paymentSystem);
+	}
+
+	private void launchCoinAmountRefresher(PaymentSystem paymentSystem) {
+		refresher = new CoinAmountRefresher();
+		refresher.launchRefresh(paymentSystem);
 	}
 
 	private void tryStartToMakeSelectedDrink() {
