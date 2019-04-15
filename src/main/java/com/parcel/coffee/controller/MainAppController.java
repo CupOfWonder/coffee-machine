@@ -75,7 +75,7 @@ public class MainAppController {
 
 	private boolean macAddressIsCorrect() {
 		try {
-			String rightMac = "b8:27:eb:d9:31:ee";
+			String rightMac = "b8:27:eb:8c:64:bb";
 			Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
 			while(interfaces.hasMoreElements()) {
 				NetworkInterface ni = interfaces.nextElement();
