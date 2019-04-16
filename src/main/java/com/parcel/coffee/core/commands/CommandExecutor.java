@@ -1,7 +1,6 @@
 package com.parcel.coffee.core.commands;
 
 import com.parcel.payment.parts.utils.ThreadUtils;
-import javafx.application.Platform;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -31,20 +30,8 @@ public class CommandExecutor {
 			private void runCommandsWhilePossible() {
 				while(!queue.isEmpty()) {
 					Command command = queue.poll();
-
-					switch (command.getType()) {
-						case HARDWARE:
-							command.execute();
-							break;
-						case INTERFACE:
-							Platform.runLater(new Runnable() {
-								@Override
-								public void run() {
-									command.execute();
-								}
-							});
-							break;
-					}
+					System.out.println("Running now: "+command.getClass().getSimpleName());
+					command.execute();
 				}
 			}
 		});
@@ -52,6 +39,7 @@ public class CommandExecutor {
 	}
 
 	public void addCommandToQueue(Command command) {
+		System.out.println("Added to queue: "+command.getClass().getSimpleName());
 		synchronized (monitor) {
 			queue.add(command);
 			monitor.notifyAll();

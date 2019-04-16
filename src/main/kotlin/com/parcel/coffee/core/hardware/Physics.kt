@@ -34,7 +34,7 @@ class Board
     private val settingsFileName = "Settings.json"
 
     @Expose
-    var buttons =arrayListOf(
+    var buttons = arrayListOf(
             Button(0, arrayListOf(Rele(0, 1000, 3000), Rele(2, 200, 10), Rele(1, 400, 800))),
             Button(1, arrayListOf(Rele(2, 1, 3), Rele(1, 2, 1), Rele(0, 4, 8))),
             Button(2, arrayListOf(Rele(3, 1, 3), Rele(4, 2, 1), Rele(5, 4, 8))),

@@ -2,6 +2,9 @@ package com.parcel.coffee.controller;
 
 import com.parcel.Board;
 import com.parcel.coffee.SceneSwitcher;
+import com.parcel.coffee.core.commands.CommandExecutor;
+import com.parcel.coffee.core.commands.HardwareCommand;
+import com.parcel.coffee.core.commands.InterfaceCommand;
 import com.parcel.coffee.core.drinks.Drink;
 import com.parcel.coffee.core.drinks.DrinkListManager;
 import com.parcel.coffee.core.events.DrinkListChangeHandler;
@@ -9,6 +12,7 @@ import com.parcel.coffee.core.events.EventBus;
 import com.parcel.coffee.core.hardware.helpers.ButtonPushHandler;
 import com.parcel.coffee.core.hardware.helpers.WorkFinishHandler;
 import com.parcel.coffee.core.payment.Balance;
+import com.parcel.coffee.core.state.CoffeeMachineState;
 import com.parcel.payment.parts.PaymentSystem;
 import com.parcel.payment.parts.events.PaymentSystemEvent;
 import com.parcel.payment.parts.events.PaymentSystemEventHandler;
@@ -62,9 +66,13 @@ public class MainAppController {
 	private static final String DRINK_IS_READY_MSG = "Готово!";
 	private static final String HOPPER_NO_MONEY_MSG = "Отсутствуют монеты для сдачи";
 
+	private CoffeeMachineState state = new CoffeeMachineState();
+	private CommandExecutor commandExecutor = new CommandExecutor();
+
 	@FXML
 	public void initialize() {
 		initUi();
+		initExecutor();
 
 		if(macAddressIsCorrect()) {
 			initHardware();
@@ -75,7 +83,8 @@ public class MainAppController {
 
 	private boolean macAddressIsCorrect() {
 		try {
-			String rightMac = "b8:27:eb:8c:64:bb";
+//			String rightMac = "b8:27:eb:8c:64:bb"; //Клиента
+			String rightMac = "50:3e:aa:4a:c5:5f"; //Мой
 			Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
 			while(interfaces.hasMoreElements()) {
 				NetworkInterface ni = interfaces.nextElement();
@@ -105,17 +114,8 @@ public class MainAppController {
 		return sb.toString().toLowerCase();
 	}
 
-	private boolean arraysAreEqual(byte[] macBytes, int[] rightMac) {
-		if(macBytes == null || macBytes.length != rightMac.length) {
-			return false;
-		} else {
-			for(int i = 0; i < macBytes.length; i++) {
-				if(macBytes[i] != rightMac[i]) {
-					return false;
-				}
-			}
-			return true;
-		}
+	private void initExecutor() {
+		commandExecutor.run();
 	}
 
 
@@ -146,7 +146,7 @@ public class MainAppController {
 	}
 
 	private void initHardware() {
-		initBoard();
+		//initBoard();
 		initPaymentSystem();
 	}
 
@@ -164,8 +164,8 @@ public class MainAppController {
 					if(drinkIsBeingMade) {
 						return;
 					} else {
-						selectDrink(drinkNumber);
-						tryStartToMakeSelectedDrink();
+						commandExecutor.addCommandToQueue(new SelectDrinkCommand(drinkNumber));
+						commandExecutor.addCommandToQueue(new TryToStartMakeDrinkCommand());
 					}
 				}
 			});
@@ -193,17 +193,16 @@ public class MainAppController {
 			public void onEvent(PaymentSystemEvent event) {
 				switch (event.getType()) {
 					case MONEY_INCOME:
-						balance.addToBalance(event.getMoneyAmount());
-						refreshBalanceWidget();
-						tryStartToMakeSelectedDrink();
+						commandExecutor.addCommandToQueue(new AddToBalanceCommand(event.getMoneyAmount()));
+						commandExecutor.addCommandToQueue(new TryToStartMakeDrinkCommand());
 						break;
 					case MONEY_DISPENSE_SUCCESS:
 						break;
 					case HOPPER_NO_MONEY:
 					case HOPPER_NOT_EXACT_AMOUNT:
-						showShortMessage(HOPPER_NO_MONEY_MSG);
+						commandExecutor.addCommandToQueue(new ShowShortMessageCommand(HOPPER_NO_MONEY_MSG));
 						balance.reset();
-						refreshBalanceWidget();
+						commandExecutor.addCommandToQueue(new RefreshBalanceCommand());
 
 						break;
 
@@ -211,141 +210,184 @@ public class MainAppController {
 				}
 			}
 		});
-		refreshBalanceWidget();
+		commandExecutor.addCommandToQueue(new RefreshBalanceCommand());
 	}
 
-	private void tryStartToMakeSelectedDrink() {
-		System.out.println("Trying to start to make drink "+selectedDrinkNum);
-		if(selectedDrinkNum != null) {
-			Drink drink = shownDrinkMap.get(selectedDrinkNum);
+	private class AddToBalanceCommand extends HardwareCommand {
 
-			if(drink == null) {
-				return;
-			}
+		private final int amount;
 
-			int price = drink.getPrice();
-			if(balance.checkHasEnoughForBuy(price)) {
-				balance.substractFromBalance(price);
-				startDrinkMaking(selectedDrinkNum);
-			}
+		public AddToBalanceCommand(int amount) {
+			this.amount = amount;
 		}
 
-	}
-
-	private void startDrinkMaking(int buttonNum) {
-		drinkIsBeingMade = true;
-		selectDrink(buttonNum);
-		showBlinkingMessage(DRINK_IS_MAKING_MSG);
-		board.executeButtonScript(buttonNum);
-	}
-
-	private void selectDrink(Integer drinkNum) {
-		
-		if(selectedDrinkNum != null) {
-			unselectDrink(selectedDrinkNum);
+		@Override
+		public void execute() {
+			balance.addToBalance(amount);
+			commandExecutor.addCommandToQueue(new RefreshBalanceCommand());
 		}
+	}
 
-		selectedDrinkNum = drinkNum;
+	private class TryToStartMakeDrinkCommand extends HardwareCommand {
 
-		Platform.runLater(new Runnable() {
-			
-			public void run() {
-				if(drinkNum != null) {
-					HBox panel = buttonPanelMap.get(drinkNum);
-					panel.getStyleClass().remove("drink");
-					panel.getStyleClass().add("drink-active");
+		@Override
+		public void execute() {
+			System.out.println("Trying to start to make drink "+selectedDrinkNum);
+
+			Integer selectedDrink = state.getSelectedDrink();
+			if(selectedDrink != null) {
+				Drink drink = shownDrinkMap.get(selectedDrink);
+
+				if(drink == null) {
+					return;
+				}
+
+				int price = drink.getPrice();
+				if(balance.checkHasEnoughForBuy(price)) {
+					balance.substractFromBalance(price);
+					startDrinkMaking(selectedDrink);
 				}
 			}
-		});
+		}
+
+		private void startDrinkMaking(int buttonNum) {
+			drinkIsBeingMade = true;
+			showBlinkingMessage(DRINK_IS_MAKING_MSG);
+			board.executeButtonScript(buttonNum);
+		}
 	}
 
-	private void unselectDrink(Integer drinkNum) {
-		Platform.runLater(new Runnable() {
-			public void run() {
-				HBox panel = buttonPanelMap.get(drinkNum);
-				panel.getStyleClass().remove("drink-active");
-				panel.getStyleClass().add("drink");
+	private class SelectDrinkCommand extends InterfaceCommand {
+
+		private final int drinkNum;
+
+		public SelectDrinkCommand(int drinkNum) {
+			this.drinkNum = drinkNum;
+		}
+
+		@Override
+		public void doInInterface() {
+			if(selectedDrinkNum != null) {
+				commandExecutor.addCommandToQueue(new UnselectDrinkCommand(drinkNum));
 			}
-		});
+
+			HBox panel = buttonPanelMap.get(drinkNum);
+			panel.getStyleClass().remove("drink");
+			panel.getStyleClass().add("drink-active");
+
+			state.drinkWasSelected(drinkNum);
+		}
+	}
+
+	private class UnselectDrinkCommand extends InterfaceCommand {
+
+		private final int drinkNum;
+
+		public UnselectDrinkCommand(int drinkNum) {
+			this.drinkNum = drinkNum;
+		}
+
+		@Override
+		public void doInInterface() {
+			HBox panel = buttonPanelMap.get(drinkNum);
+			panel.getStyleClass().remove("drink-active");
+			panel.getStyleClass().add("drink");
+		}
+	}
+
+	private class ShowBlinkingMessageCommand extends InterfaceCommand{
+
+		private final String message;
+
+		public ShowBlinkingMessageCommand(String message) {
+			this.message = message;
+		}
+
+		@Override
+		public void doInInterface() {
+			balanceLabel.setVisible(false);
+			shortMessagePanel.setVisible(false);
+			blinkingMessagePanel.setVisible(true);
+			blinkingMessageLabel.setText(message);
+
+			blinkingMessageTimer = new Timer();
+			blinkingMessageTimer.schedule(new TimerTask() {
+
+				private boolean on = true;
+
+				@Override
+				public void run() {
+					Platform.runLater(new Runnable() {
+						@Override
+						public void run() {
+							blinkingMessagePanel.setVisible(on);
+							on = !on;
+						}
+					});
+				}
+			}, 0, DRINK_MAKING_BLINK_PERIOD);
+		}
 	}
 
 	private void showBlinkingMessage(String message) {
-		System.out.println("Showing blinking message");
-		Platform.runLater(new Runnable() {
-			public void run() {
-
-				balanceLabel.setVisible(false);
-				shortMessagePanel.setVisible(false);
-				blinkingMessagePanel.setVisible(true);
-
-				blinkingMessageLabel.setText(message);
-			}
-
-		});
-	
-		blinkingMessageTimer = new Timer();
-
-		blinkingMessageTimer.schedule(new TimerTask() {
-
-			private boolean on = true;
-
-			@Override
-			public void run() {
-				Platform.runLater(new Runnable() {
-					@Override
-					public void run() {
-						blinkingMessagePanel.setVisible(on);
-						on = !on;
-					}
-				});
-			}
-		}, 0, DRINK_MAKING_BLINK_PERIOD);
+		commandExecutor.addCommandToQueue(new ShowBlinkingMessageCommand(message));
 	}
 
 	private void handleDrinkCompletion() {
-		giveCoinChange();
-		stopBlinkingMessageAnimation();
-		showShortMessage(DRINK_IS_READY_MSG);
-		selectDrink(null);
+		commandExecutor.addCommandToQueue(new GiveCoinChangeCommand());
+		commandExecutor.addCommandToQueue(new ShowShortMessageCommand(DRINK_IS_READY_MSG));
+		commandExecutor.addCommandToQueue(new UnselectDrinkCommand(state.getSelectedDrink()));
 	}
 
-	private void showShortMessage(String message) {
-		Platform.runLater(new Runnable() {
-			public void run() {
+	private class ShowShortMessageCommand extends InterfaceCommand {
 
-				balanceLabel.setVisible(false);
-				blinkingMessagePanel.setVisible(false);
-				shortMessagePanel.setVisible(true);
-				shortMessageLabel.setText(message);
-			}
-		});
+		private final String message;
 
-		Timer timer = new Timer();
-		timer.schedule(new TimerTask() {
-			@Override
-			public void run() {
-				Platform.runLater(new Runnable() {
-					public void run() {
-						shortMessagePanel.setVisible(false);
-						balanceLabel.setVisible(true);
-					}
-				});
-			}
-		}, DRINK_COMPLETE_SHOW_PERIOD);
-	}
+		public ShowShortMessageCommand(String message) {
+			this.message = message;
+		}
 
-	//Функция дает сдачу
-	private void giveCoinChange() {
-		if(balance.getBalance() > 0) {
-			paymentSystem.dispenseMoney(balance.getBalance());
-			balance.reset();
-			refreshBalanceWidget();
+		@Override
+		public void doInInterface() {
+			stopBlinkingMessageAnimationIfNeeded();
+
+			balanceLabel.setVisible(false);
+			blinkingMessagePanel.setVisible(false);
+			shortMessagePanel.setVisible(true);
+			shortMessageLabel.setText(message);
+
+			Timer timer = new Timer();
+			timer.schedule(new TimerTask() {
+				@Override
+				public void run() {
+					Platform.runLater(new Runnable() {
+						public void run() {
+							shortMessagePanel.setVisible(false);
+							balanceLabel.setVisible(true);
+						}
+					});
+				}
+			}, DRINK_COMPLETE_SHOW_PERIOD);
+
 		}
 	}
 
-	private void stopBlinkingMessageAnimation() {
+	private class GiveCoinChangeCommand extends HardwareCommand {
+
+		@Override
+		public void execute() {
+			if(balance.getBalance() > 0) {
+				paymentSystem.dispenseMoney(balance.getBalance());
+				balance.reset();
+				commandExecutor.addCommandToQueue(new RefreshBalanceCommand());
+			}
+		}
+	}
+
+	private void stopBlinkingMessageAnimationIfNeeded() {
 		if(blinkingMessageTimer != null) {
 			blinkingMessageTimer.cancel();
+			blinkingMessageTimer = null;
 		}
 	}
 
@@ -366,20 +408,19 @@ public class MainAppController {
 
 	public void onMouse(MouseEvent mouseEvent) {
 		if(mouseEvent.getClickCount() == 2) {
+			stopBlinkingMessageAnimationIfNeeded();
 			SceneSwitcher.getInstance().switchToLoginWindow();
 		}
 	}
 
-
-	private void refreshBalanceWidget() {
-		Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
-				int roubles = balance.getBalance();
-				balanceDigitLabel.setText(roubles+" р");
-			}
-		});
+	private class RefreshBalanceCommand extends InterfaceCommand {
+		@Override
+		public void doInInterface() {
+			int roubles = balance.getBalance();
+			balanceDigitLabel.setText(roubles+" р");
+		}
 	}
+
 
 	private class DrinkLabelPair {
 		private Label nameLabel;
