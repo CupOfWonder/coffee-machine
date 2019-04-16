@@ -226,17 +226,10 @@ public class MainAppController {
 			int price = drink.getPrice();
 			if(balance.checkHasEnoughForBuy(price)) {
 				balance.substractFromBalance(price);
-				//giveCoinsWithoutDrinkMaking(selectedDrinkNum);	//Команда для теста без платы для изготовления
 				startDrinkMaking(selectedDrinkNum);
 			}
 		}
 
-	}
-
-	private void giveCoinsWithoutDrinkMaking(int buttonNum) {
-		selectDrink(buttonNum);
-		giveCoinChange();
-		selectDrink(null);
 	}
 
 	private void startDrinkMaking(int buttonNum) {
