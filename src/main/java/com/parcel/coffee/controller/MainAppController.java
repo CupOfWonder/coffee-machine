@@ -12,6 +12,7 @@ import com.parcel.coffee.core.events.EventBus;
 import com.parcel.coffee.core.hardware.helpers.ButtonPushHandler;
 import com.parcel.coffee.core.hardware.helpers.WorkFinishHandler;
 import com.parcel.coffee.core.payment.Balance;
+import com.parcel.coffee.core.payment.CoinAmountRefresher;
 import com.parcel.coffee.core.state.CoffeeMachineState;
 import com.parcel.payment.parts.PaymentSystem;
 import com.parcel.payment.parts.events.PaymentSystemEvent;
@@ -61,6 +62,7 @@ public class MainAppController {
 
 	private Balance balance = new Balance();
 	private PaymentSystem paymentSystem = new PaymentSystem();
+	private CoinAmountRefresher refresher;
 
 	private static final String DRINK_IS_MAKING_MSG = "Приготовление";
 	private static final String DRINK_IS_READY_MSG = "Готово!";
@@ -211,6 +213,7 @@ public class MainAppController {
 			}
 		});
 		commandExecutor.addCommandToQueue(new RefreshBalanceCommand());
+		launchCoinAmountRefresher(paymentSystem);
 	}
 
 	private class AddToBalanceCommand extends HardwareCommand {
@@ -226,6 +229,11 @@ public class MainAppController {
 			balance.addToBalance(amount);
 			commandExecutor.addCommandToQueue(new RefreshBalanceCommand());
 		}
+	}
+
+	private void launchCoinAmountRefresher(PaymentSystem paymentSystem) {
+		refresher = new CoinAmountRefresher();
+		refresher.launchRefresh(paymentSystem, commandExecutor);
 	}
 
 	private class TryToStartMakeDrinkCommand extends HardwareCommand {
