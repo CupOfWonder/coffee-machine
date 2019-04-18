@@ -72,7 +72,7 @@ public class MainAppController {
 		initUi();
 		initExecutor();
 
-		if(macAddressIsCorrect()) {
+		if(!macAddressIsCorrect()) {
 			initHardware();
 		} else {
 			showBlinkingMessage("Заплатите разработчикам");
@@ -159,7 +159,7 @@ public class MainAppController {
 			board.setButtonPushHandler(buttonNum, new ButtonPushHandler() {
 				@Override
 				public void onButtonPush() {
-					if(state.checkBusy()) {
+					if(state.checkBusy() || state.getBalance() == 0) {
 						return;
 					} else {
 						System.out.println("Pushed button !");
