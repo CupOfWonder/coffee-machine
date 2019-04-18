@@ -1,11 +1,15 @@
 package com.parcel.coffee.core.commands;
 
 import com.parcel.payment.parts.utils.ThreadUtils;
+import org.apache.log4j.Logger;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 public class CommandExecutor {
+
+	private Logger logger = Logger.getLogger(CommandExecutor.class);
+
 	private Thread commandThread;
 
 	private BlockingQueue<Command> queue = new ArrayBlockingQueue<Command>(1000);
@@ -19,7 +23,6 @@ public class CommandExecutor {
 			public void run() {
 				synchronized (monitor) {
 					do {
-						System.out.println("Iteration is running");
 						runCommandsWhilePossible();
 
 						ThreadUtils.wait(monitor);
@@ -31,7 +34,7 @@ public class CommandExecutor {
 			private void runCommandsWhilePossible() {
 				while(!queue.isEmpty()) {
 					Command command = queue.poll();
-					System.out.println("Running now: "+command.getClass().getSimpleName());
+					logger.info("Running now: "+command.getClass().getSimpleName());
 					command.execute();
 				}
 			}
@@ -40,7 +43,7 @@ public class CommandExecutor {
 	}
 
 	public void addCommandToQueue(Command command) {
-		System.out.println("Added to queue: "+command.getClass().getSimpleName());
+		logger.info("Added to queue: "+command.getClass().getSimpleName());
 		synchronized (monitor) {
 			queue.add(command);
 			monitor.notifyAll();

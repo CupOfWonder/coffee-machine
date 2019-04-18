@@ -162,7 +162,6 @@ public class MainAppController {
 					if(state.checkBusy() || state.getBalance() == 0) {
 						return;
 					} else {
-						System.out.println("Pushed button !");
 						commandExecutor.addCommandToQueue(new SelectDrinkCommand(drinkNumber));
 						commandExecutor.addCommandToQueue(new TryToStartMakeDrinkCommand());
 					}
@@ -235,8 +234,6 @@ public class MainAppController {
 
 		@Override
 		public void execute() {
-			System.out.println("Trying to start to make drink "+state.getSelectedDrink());
-
 			Integer selectedDrink = state.getSelectedDrink();
 			if(selectedDrink != null) {
 				Drink drink = shownDrinkMap.get(selectedDrink);
