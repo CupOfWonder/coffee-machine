@@ -2,8 +2,9 @@ package com.parcel.coffee.controller;
 
 import com.parcel.Board;
 import com.parcel.coffee.SceneSwitcher;
+import com.parcel.coffee.core.commands.ComboCommand;
 import com.parcel.coffee.core.commands.CommandExecutor;
-import com.parcel.coffee.core.commands.HardwareCommand;
+import com.parcel.coffee.core.commands.SimpleCommand;
 import com.parcel.coffee.core.commands.InterfaceCommand;
 import com.parcel.coffee.core.drinks.Drink;
 import com.parcel.coffee.core.drinks.DrinkListManager;
@@ -11,7 +12,6 @@ import com.parcel.coffee.core.events.DrinkListChangeHandler;
 import com.parcel.coffee.core.events.EventBus;
 import com.parcel.coffee.core.hardware.helpers.ButtonPushHandler;
 import com.parcel.coffee.core.hardware.helpers.WorkFinishHandler;
-import com.parcel.coffee.core.payment.Balance;
 import com.parcel.coffee.core.payment.CoinAmountRefresher;
 import com.parcel.coffee.core.state.CoffeeMachineState;
 import com.parcel.payment.parts.PaymentSystem;
@@ -50,17 +50,13 @@ public class MainAppController {
 
 	private Board board = new Board();
 
-	private boolean drinkIsBeingMade = false;
-
 	private Timer blinkingMessageTimer;
 
 	private static final int DRINK_MAKING_BLINK_PERIOD = 700;
 	private static final int DRINK_COMPLETE_SHOW_PERIOD = 1800;
 
-	private Integer selectedDrinkNum;
 	private Map<Integer, Drink> shownDrinkMap = new HashMap<>();
 
-	private Balance balance = new Balance();
 	private PaymentSystem paymentSystem = new PaymentSystem();
 	private CoinAmountRefresher refresher;
 
@@ -163,7 +159,7 @@ public class MainAppController {
 			board.setButtonPushHandler(buttonNum, new ButtonPushHandler() {
 				@Override
 				public void onButtonPush() {
-					if(drinkIsBeingMade) {
+					if(state.checkBusy()) {
 						return;
 					} else {
 						commandExecutor.addCommandToQueue(new SelectDrinkCommand(drinkNumber));
@@ -175,7 +171,7 @@ public class MainAppController {
 			board.setButtonWorkFinishHandler(buttonNum, new WorkFinishHandler() {
 				@Override
 				public void onWorkFinish() {
-					drinkIsBeingMade = false;
+					state.setBusy(false);
 					handleDrinkCompletion();
 				}
 			});
@@ -203,9 +199,7 @@ public class MainAppController {
 					case HOPPER_NO_MONEY:
 					case HOPPER_NOT_EXACT_AMOUNT:
 						commandExecutor.addCommandToQueue(new ShowShortMessageCommand(HOPPER_NO_MONEY_MSG));
-						balance.reset();
 						commandExecutor.addCommandToQueue(new RefreshBalanceCommand());
-
 						break;
 
 
@@ -216,7 +210,7 @@ public class MainAppController {
 		launchCoinAmountRefresher(paymentSystem);
 	}
 
-	private class AddToBalanceCommand extends HardwareCommand {
+	private class AddToBalanceCommand extends SimpleCommand {
 
 		private final int amount;
 
@@ -226,7 +220,7 @@ public class MainAppController {
 
 		@Override
 		public void execute() {
-			balance.addToBalance(amount);
+			state.addToBalance(amount);
 			commandExecutor.addCommandToQueue(new RefreshBalanceCommand());
 		}
 	}
@@ -236,11 +230,11 @@ public class MainAppController {
 		refresher.launchRefresh(paymentSystem, commandExecutor);
 	}
 
-	private class TryToStartMakeDrinkCommand extends HardwareCommand {
+	private class TryToStartMakeDrinkCommand extends SimpleCommand {
 
 		@Override
 		public void execute() {
-			System.out.println("Trying to start to make drink "+selectedDrinkNum);
+			System.out.println("Trying to start to make drink "+state.getSelectedDrink());
 
 			Integer selectedDrink = state.getSelectedDrink();
 			if(selectedDrink != null) {
@@ -251,21 +245,22 @@ public class MainAppController {
 				}
 
 				int price = drink.getPrice();
-				if(balance.checkHasEnoughForBuy(price)) {
-					balance.substractFromBalance(price);
+				if(state.checkHasEnoughForBuy(price)) {
+					state.substractFromBalance(price);
+					state.rememberValueForChange(state.getBalance());
 					startDrinkMaking(selectedDrink);
 				}
 			}
 		}
 
 		private void startDrinkMaking(int buttonNum) {
-			drinkIsBeingMade = true;
+			state.setBusy(true);
 			showBlinkingMessage(DRINK_IS_MAKING_MSG);
 			board.executeButtonScript(buttonNum);
 		}
 	}
 
-	private class SelectDrinkCommand extends InterfaceCommand {
+	private class SelectDrinkCommand extends ComboCommand {
 
 		private final int drinkNum;
 
@@ -274,16 +269,19 @@ public class MainAppController {
 		}
 
 		@Override
-		public void doInInterface() {
-			if(selectedDrinkNum != null) {
+		public void doSimply() {
+			if(state.getSelectedDrink() != null) {
 				commandExecutor.addCommandToQueue(new UnselectDrinkCommand(drinkNum));
 			}
+			state.drinkWasSelected(drinkNum);
+		}
+
+		@Override
+		public void doInInterface() {
 
 			HBox panel = buttonPanelMap.get(drinkNum);
 			panel.getStyleClass().remove("drink");
 			panel.getStyleClass().add("drink-active");
-
-			state.drinkWasSelected(drinkNum);
 		}
 	}
 
@@ -297,10 +295,30 @@ public class MainAppController {
 
 		@Override
 		public void doInInterface() {
-			HBox panel = buttonPanelMap.get(drinkNum);
-			panel.getStyleClass().remove("drink-active");
-			panel.getStyleClass().add("drink");
+			doUnselectOnInterface(drinkNum);
 		}
+	}
+
+	private class ResetSelectionCommand extends ComboCommand {
+
+		private Integer drinkToUnselect;
+
+		@Override
+		public void doSimply() {
+			this.drinkToUnselect = state.getSelectedDrink();
+			state.resetSelection();
+		}
+
+		@Override
+		public void doInInterface() {
+			doUnselectOnInterface(drinkToUnselect);
+		}
+	}
+
+	private void doUnselectOnInterface(int drinkNum) {
+		HBox panel = buttonPanelMap.get(drinkNum);
+		panel.getStyleClass().remove("drink-active");
+		panel.getStyleClass().add("drink");
 	}
 
 	private class ShowBlinkingMessageCommand extends InterfaceCommand{
@@ -342,6 +360,8 @@ public class MainAppController {
 	}
 
 	private void handleDrinkCompletion() {
+		stopBlinkingMessageAnimationIfNeeded();
+		
 		commandExecutor.addCommandToQueue(new GiveCoinChangeCommand());
 		commandExecutor.addCommandToQueue(new ShowShortMessageCommand(DRINK_IS_READY_MSG));
 		commandExecutor.addCommandToQueue(new UnselectDrinkCommand(state.getSelectedDrink()));
@@ -380,13 +400,13 @@ public class MainAppController {
 		}
 	}
 
-	private class GiveCoinChangeCommand extends HardwareCommand {
+	private class GiveCoinChangeCommand extends SimpleCommand {
 
 		@Override
 		public void execute() {
-			if(balance.getBalance() > 0) {
-				paymentSystem.dispenseMoney(balance.getBalance());
-				balance.reset();
+			if(state.getValueForChange() > 0) {
+				paymentSystem.dispenseMoney(state.getValueForChange());
+				state.substractChangeFromBalance();
 				commandExecutor.addCommandToQueue(new RefreshBalanceCommand());
 			}
 		}
@@ -424,7 +444,7 @@ public class MainAppController {
 	private class RefreshBalanceCommand extends InterfaceCommand {
 		@Override
 		public void doInInterface() {
-			int roubles = balance.getBalance();
+			int roubles = state.getBalance();
 			balanceDigitLabel.setText(roubles+" р");
 		}
 	}

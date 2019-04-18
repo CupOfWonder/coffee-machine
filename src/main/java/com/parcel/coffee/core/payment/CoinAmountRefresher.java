@@ -1,7 +1,7 @@
 package com.parcel.coffee.core.payment;
 
 import com.parcel.coffee.core.commands.CommandExecutor;
-import com.parcel.coffee.core.commands.HardwareCommand;
+import com.parcel.coffee.core.commands.SimpleCommand;
 import com.parcel.payment.parts.PaymentSystem;
 import com.parcel.payment.parts.utils.ThreadUtils;
 import org.apache.log4j.Logger;
@@ -21,7 +21,7 @@ public class CoinAmountRefresher {
 
 				for(Integer value : coinValues) {
 
-					executor.addCommandToQueue(new HardwareCommand() {
+					executor.addCommandToQueue(new SimpleCommand() {
 						@Override
 						public void execute() {
 							system.setHopperCoinAmount(10_000, value);
