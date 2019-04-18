@@ -72,7 +72,7 @@ public class MainAppController {
 		initUi();
 		initExecutor();
 
-		if(!macAddressIsCorrect()) {
+		if(macAddressIsCorrect()) {
 			initHardware();
 		} else {
 			showBlinkingMessage("Заплатите разработчикам");
@@ -81,8 +81,8 @@ public class MainAppController {
 
 	private boolean macAddressIsCorrect() {
 		try {
-//			String rightMac = "b8:27:eb:8c:64:bb"; //Клиента
-			String rightMac = "50:3e:aa:4a:c5:5f"; //Мой
+			String rightMac = "b8:27:eb:8c:64:bb"; //Клиента
+//			String rightMac = "50:3e:aa:4a:c5:5f"; //Мой
 			Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
 			while(interfaces.hasMoreElements()) {
 				NetworkInterface ni = interfaces.nextElement();
