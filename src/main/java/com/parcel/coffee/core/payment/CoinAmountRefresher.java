@@ -25,7 +25,6 @@ public class CoinAmountRefresher {
 						@Override
 						public void execute() {
 							system.setHopperCoinAmount(10_000, value);
-							ThreadUtils.sleep(10_000);
 						}
 					});
 				}

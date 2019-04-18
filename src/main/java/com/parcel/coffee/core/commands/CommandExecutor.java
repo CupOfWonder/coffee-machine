@@ -19,6 +19,7 @@ public class CommandExecutor {
 			public void run() {
 				synchronized (monitor) {
 					do {
+						System.out.println("Iteration is running");
 						runCommandsWhilePossible();
 
 						ThreadUtils.wait(monitor);

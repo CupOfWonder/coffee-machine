@@ -144,7 +144,7 @@ public class MainAppController {
 	}
 
 	private void initHardware() {
-		//initBoard();
+		initBoard();
 		initPaymentSystem();
 	}
 
@@ -162,6 +162,7 @@ public class MainAppController {
 					if(state.checkBusy()) {
 						return;
 					} else {
+						System.out.println("Pushed button !");
 						commandExecutor.addCommandToQueue(new SelectDrinkCommand(drinkNumber));
 						commandExecutor.addCommandToQueue(new TryToStartMakeDrinkCommand());
 					}
@@ -248,54 +249,50 @@ public class MainAppController {
 				if(state.checkHasEnoughForBuy(price)) {
 					state.substractFromBalance(price);
 					state.rememberValueForChange(state.getBalance());
-					startDrinkMaking(selectedDrink);
+					
+					state.setBusy(true);
+					showBlinkingMessage(DRINK_IS_MAKING_MSG);
+					commandExecutor.addCommandToQueue(new StartDrinkMakingCommand(selectedDrink));
 				}
 			}
 		}
 
-		private void startDrinkMaking(int buttonNum) {
-			state.setBusy(true);
-			showBlinkingMessage(DRINK_IS_MAKING_MSG);
-			board.executeButtonScript(buttonNum);
+	}
+
+	private class StartDrinkMakingCommand extends SimpleCommand {
+		
+		private final int drinkNum;
+
+		public StartDrinkMakingCommand(int drinkNum) {
+			this.drinkNum = drinkNum;
+		}
+
+		public void execute() {
+			board.executeButtonScript(drinkNum);
 		}
 	}
 
 	private class SelectDrinkCommand extends ComboCommand {
 
 		private final int drinkNum;
+		private final Integer oldDrinkNum;
 
 		public SelectDrinkCommand(int drinkNum) {
 			this.drinkNum = drinkNum;
+			this.oldDrinkNum = state.getSelectedDrink();
 		}
 
 		@Override
 		public void doSimply() {
-			if(state.getSelectedDrink() != null) {
-				commandExecutor.addCommandToQueue(new UnselectDrinkCommand(drinkNum));
-			}
 			state.drinkWasSelected(drinkNum);
 		}
 
 		@Override
 		public void doInInterface() {
-
+			doUnselectOnInterface();
 			HBox panel = buttonPanelMap.get(drinkNum);
 			panel.getStyleClass().remove("drink");
 			panel.getStyleClass().add("drink-active");
-		}
-	}
-
-	private class UnselectDrinkCommand extends InterfaceCommand {
-
-		private final int drinkNum;
-
-		public UnselectDrinkCommand(int drinkNum) {
-			this.drinkNum = drinkNum;
-		}
-
-		@Override
-		public void doInInterface() {
-			doUnselectOnInterface(drinkNum);
 		}
 	}
 
@@ -311,14 +308,16 @@ public class MainAppController {
 
 		@Override
 		public void doInInterface() {
-			doUnselectOnInterface(drinkToUnselect);
+			doUnselectOnInterface();
 		}
 	}
 
-	private void doUnselectOnInterface(int drinkNum) {
-		HBox panel = buttonPanelMap.get(drinkNum);
-		panel.getStyleClass().remove("drink-active");
-		panel.getStyleClass().add("drink");
+	private void doUnselectOnInterface() {
+		for(int drink = 0; drink < 6; drink++) {
+			HBox panel = buttonPanelMap.get(drink);
+			panel.getStyleClass().remove("drink-active");
+			panel.getStyleClass().add("drink");
+		}
 	}
 
 	private class ShowBlinkingMessageCommand extends InterfaceCommand{
@@ -361,10 +360,10 @@ public class MainAppController {
 
 	private void handleDrinkCompletion() {
 		stopBlinkingMessageAnimationIfNeeded();
-		
+
 		commandExecutor.addCommandToQueue(new GiveCoinChangeCommand());
 		commandExecutor.addCommandToQueue(new ShowShortMessageCommand(DRINK_IS_READY_MSG));
-		commandExecutor.addCommandToQueue(new UnselectDrinkCommand(state.getSelectedDrink()));
+		commandExecutor.addCommandToQueue(new ResetSelectionCommand());
 	}
 
 	private class ShowShortMessageCommand extends InterfaceCommand {
