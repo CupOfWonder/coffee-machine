@@ -20,11 +20,11 @@ public class CoinAmountRefresher {
 				List<Integer> coinValues = Arrays.asList(1, 2, 5, 10);
 
 				for(Integer value : coinValues) {
-
 					executor.addCommandToQueue(new SimpleCommand() {
 						@Override
 						public void execute() {
 							system.setHopperCoinAmount(10_000, value);
+							ThreadUtils.sleep(400);
 						}
 					});
 				}
