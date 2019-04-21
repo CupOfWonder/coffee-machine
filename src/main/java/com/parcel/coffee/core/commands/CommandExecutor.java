@@ -35,7 +35,7 @@ public class CommandExecutor {
 				while(!queue.isEmpty()) {
 					Command command = queue.poll();
 					logger.info("Running now: "+command.getClass().getSimpleName());
-					command.execute();
+					command.executeIfPossible();
 				}
 			}
 		});

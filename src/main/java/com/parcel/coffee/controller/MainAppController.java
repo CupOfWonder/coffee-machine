@@ -73,7 +73,7 @@ public class MainAppController {
 		initUi();
 		initExecutor();
 
-		if(macAddressIsCorrect()) {
+		if(!macAddressIsCorrect()) {
 			initHardware();
 		} else {
 			showBlinkingMessage("Заплатите разработчикам");
@@ -162,12 +162,7 @@ public class MainAppController {
 			board.setButtonPushHandler(buttonNum, new ButtonPushHandler() {
 				@Override
 				public void onButtonPush() {
-					if(state.checkBusy() || state.getBalance() == 0) {
-						return;
-					} else {
-						commandExecutor.addCommandToQueue(new SelectDrinkCommand(drinkNumber));
-						commandExecutor.addCommandToQueue(new TryToStartMakeDrinkCommand());
-					}
+					commandExecutor.addCommandToQueue(new SelectDrinkCommand(drinkNumber));
 				}
 			});
 
@@ -283,8 +278,14 @@ public class MainAppController {
 		}
 
 		@Override
+		protected boolean canDoCommand() {
+			return !state.checkBusy() && state.getBalance() > 0;
+		}
+
+		@Override
 		public void doSimply() {
 			state.drinkWasSelected(drinkNum);
+			commandExecutor.addCommandToQueue(new TryToStartMakeDrinkCommand());
 		}
 
 		@Override
@@ -298,11 +299,8 @@ public class MainAppController {
 
 	private class ResetSelectionCommand extends ComboCommand {
 
-		private Integer drinkToUnselect;
-
 		@Override
 		public void doSimply() {
-			this.drinkToUnselect = state.getSelectedDrink();
 			state.resetSelection();
 		}
 
@@ -339,8 +337,8 @@ public class MainAppController {
 	}
 
 	private void handleDrinkCompletion() {
-		commandExecutor.addCommandToQueue(new GiveCoinChangeCommand());
 		commandExecutor.addCommandToQueue(new ShowShortMessageCommand(DRINK_IS_READY_MSG));
+		commandExecutor.addCommandToQueue(new GiveCoinChangeCommand());
 		commandExecutor.addCommandToQueue(new ResetSelectionCommand());
 	}
 
@@ -395,7 +393,7 @@ public class MainAppController {
 	private class RefreshBalanceCommand extends InterfaceCommand {
 		@Override
 		public void doInInterface() {
-			topScreenWidgetController.showAndRefreshBalance();
+			topScreenWidgetController.refreshBalance();
 		}
 	}
 
@@ -428,7 +426,10 @@ public class MainAppController {
 			screenState = TopScreenState.BALANCE;
 
 			showTopScreenWidget(balancePanel);
+			refreshBalance();
+		}
 
+		public void refreshBalance() {
 			int roubles = state.getBalance();
 			balanceDigitLabel.setText(roubles+" р");
 		}
@@ -467,8 +468,8 @@ public class MainAppController {
 		public void showShortMessage(String message) {
 			screenState = TopScreenState.SHORT_MESSAGE;
 
-			showTopScreenWidget(shortMessagePanel);
 			shortMessageLabel.setText(message);
+			showTopScreenWidget(shortMessagePanel);
 
 			shortMessageTimer = new Timer();
 			shortMessageTimer.schedule(new TimerTask() {
@@ -487,11 +488,12 @@ public class MainAppController {
 			balancePanel.setVisible(false);
 			blinkingMessagePanel.setVisible(false);
 			shortMessagePanel.setVisible(false);
+		
 		}
 
-		private void showTopScreenWidget(Node topScreenWidgets) {
+		private void showTopScreenWidget(Node topScreenWidget) {
 			hideAllTopScreenWidgets();
-			topScreenWidgets.setVisible(true);
+			topScreenWidget.setVisible(true);
 		}
 
 		public void stopAllTimers() {
