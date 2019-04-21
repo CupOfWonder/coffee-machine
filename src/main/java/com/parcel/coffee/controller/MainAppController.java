@@ -61,7 +61,7 @@ public class MainAppController {
 
 	private static final String DRINK_IS_MAKING_MSG = "Приготовление";
 	private static final String DRINK_IS_READY_MSG = "Готово!";
-	private static final String HOPPER_NO_MONEY_MSG = "Отсутствуют монеты для сдачи";
+	private static final String HOPPER_NO_MONEY_MSG = "Нет монет для сдачи";
 
 	private CoffeeMachineState state = new CoffeeMachineState();
 	private CommandExecutor commandExecutor = new CommandExecutor();
@@ -73,7 +73,7 @@ public class MainAppController {
 		initUi();
 		initExecutor();
 
-		if(!macAddressIsCorrect()) {
+		if(macAddressIsCorrect()) {
 			initHardware();
 		} else {
 			showBlinkingMessage("Заплатите разработчикам");
@@ -197,7 +197,6 @@ public class MainAppController {
 					case HOPPER_NO_MONEY:
 					case HOPPER_NOT_EXACT_AMOUNT:
 						commandExecutor.addCommandToQueue(new ShowShortMessageCommand(HOPPER_NO_MONEY_MSG));
-						commandExecutor.addCommandToQueue(new RefreshBalanceCommand());
 						break;
 
 
