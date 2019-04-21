@@ -4,8 +4,8 @@ import com.parcel.Board;
 import com.parcel.coffee.SceneSwitcher;
 import com.parcel.coffee.core.commands.ComboCommand;
 import com.parcel.coffee.core.commands.CommandExecutor;
-import com.parcel.coffee.core.commands.SimpleCommand;
 import com.parcel.coffee.core.commands.InterfaceCommand;
+import com.parcel.coffee.core.commands.SimpleCommand;
 import com.parcel.coffee.core.drinks.Drink;
 import com.parcel.coffee.core.drinks.DrinkListManager;
 import com.parcel.coffee.core.events.DrinkListChangeHandler;
@@ -22,6 +22,7 @@ import com.parcel.payment.parts.hardware.coinacceptor.factory.CoinAcceptorType;
 import com.parcel.payment.parts.hardware.hopper.factory.HopperType;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -40,7 +41,7 @@ public class MainAppController {
 			balanceDigitLabel, shortMessageLabel, blinkingMessageLabel;
 
 	@FXML
-	public HBox blinkingMessagePanel, shortMessagePanel, balanceLabel;
+	public HBox blinkingMessagePanel, shortMessagePanel, balancePanel;
 
 	@FXML
 	public HBox drinkPanel1, drinkPanel2, drinkPanel3, drinkPanel4, drinkPanel5, drinkPanel6;
@@ -49,8 +50,6 @@ public class MainAppController {
 	private Map<Integer, HBox> buttonPanelMap = new HashMap<>();
 
 	private Board board = new Board();
-
-	private Timer blinkingMessageTimer;
 
 	private static final int DRINK_MAKING_BLINK_PERIOD = 700;
 	private static final int DRINK_COMPLETE_SHOW_PERIOD = 1800;
@@ -66,6 +65,8 @@ public class MainAppController {
 
 	private CoffeeMachineState state = new CoffeeMachineState();
 	private CommandExecutor commandExecutor = new CommandExecutor();
+
+	private TopScreenWidgetController topScreenWidgetController;
 
 	@FXML
 	public void initialize() {
@@ -118,6 +119,8 @@ public class MainAppController {
 
 
 	private void initUi() {
+		topScreenWidgetController = new TopScreenWidgetController();
+
 		drinkLabelPairs.add(new DrinkLabelPair(name1, price1));
 		drinkLabelPairs.add(new DrinkLabelPair(name2, price2));
 		drinkLabelPairs.add(new DrinkLabelPair(name3, price3));
@@ -327,27 +330,7 @@ public class MainAppController {
 
 		@Override
 		public void doInInterface() {
-			balanceLabel.setVisible(false);
-			shortMessagePanel.setVisible(false);
-			blinkingMessagePanel.setVisible(true);
-			blinkingMessageLabel.setText(message);
-
-			blinkingMessageTimer = new Timer();
-			blinkingMessageTimer.schedule(new TimerTask() {
-
-				private boolean on = true;
-
-				@Override
-				public void run() {
-					Platform.runLater(new Runnable() {
-						@Override
-						public void run() {
-							blinkingMessagePanel.setVisible(on);
-							on = !on;
-						}
-					});
-				}
-			}, 0, DRINK_MAKING_BLINK_PERIOD);
+			topScreenWidgetController.showBlinkingMessage(message);
 		}
 	}
 
@@ -356,8 +339,6 @@ public class MainAppController {
 	}
 
 	private void handleDrinkCompletion() {
-		stopBlinkingMessageAnimationIfNeeded();
-
 		commandExecutor.addCommandToQueue(new GiveCoinChangeCommand());
 		commandExecutor.addCommandToQueue(new ShowShortMessageCommand(DRINK_IS_READY_MSG));
 		commandExecutor.addCommandToQueue(new ResetSelectionCommand());
@@ -373,26 +354,7 @@ public class MainAppController {
 
 		@Override
 		public void doInInterface() {
-			stopBlinkingMessageAnimationIfNeeded();
-
-			balanceLabel.setVisible(false);
-			blinkingMessagePanel.setVisible(false);
-			shortMessagePanel.setVisible(true);
-			shortMessageLabel.setText(message);
-
-			Timer timer = new Timer();
-			timer.schedule(new TimerTask() {
-				@Override
-				public void run() {
-					Platform.runLater(new Runnable() {
-						public void run() {
-							shortMessagePanel.setVisible(false);
-							balanceLabel.setVisible(true);
-						}
-					});
-				}
-			}, DRINK_COMPLETE_SHOW_PERIOD);
-
+			topScreenWidgetController.showShortMessage(message);
 		}
 	}
 
@@ -405,13 +367,6 @@ public class MainAppController {
 				state.substractChangeFromBalance();
 				commandExecutor.addCommandToQueue(new RefreshBalanceCommand());
 			}
-		}
-	}
-
-	private void stopBlinkingMessageAnimationIfNeeded() {
-		if(blinkingMessageTimer != null) {
-			blinkingMessageTimer.cancel();
-			blinkingMessageTimer = null;
 		}
 	}
 
@@ -432,7 +387,7 @@ public class MainAppController {
 
 	public void onMouse(MouseEvent mouseEvent) {
 		if(mouseEvent.getClickCount() == 2) {
-			stopBlinkingMessageAnimationIfNeeded();
+			topScreenWidgetController.stopAllTimers();
 			SceneSwitcher.getInstance().switchToLoginWindow();
 		}
 	}
@@ -440,8 +395,7 @@ public class MainAppController {
 	private class RefreshBalanceCommand extends InterfaceCommand {
 		@Override
 		public void doInInterface() {
-			int roubles = state.getBalance();
-			balanceDigitLabel.setText(roubles+" р");
+			topScreenWidgetController.showAndRefreshBalance();
 		}
 	}
 
@@ -463,4 +417,100 @@ public class MainAppController {
 			priceLabel.setText(price + " р");
 		}
 	}
+
+	private class TopScreenWidgetController {
+		private volatile TopScreenState screenState;
+
+		private Timer shortMessageTimer;
+		private Timer blinkingMessageTimer;
+
+		public void showAndRefreshBalance() {
+			screenState = TopScreenState.BALANCE;
+
+			showTopScreenWidget(balancePanel);
+
+			int roubles = state.getBalance();
+			balanceDigitLabel.setText(roubles+" р");
+		}
+
+		public void showBlinkingMessage(String message) {
+			screenState = TopScreenState.BLINKING_MESSAGE;
+
+			hideAllTopScreenWidgets();
+
+			blinkingMessageLabel.setText(message);
+
+			blinkingMessageTimer = new Timer();
+			blinkingMessageTimer.schedule(new TimerTask() {
+
+				private boolean on = true;
+
+				@Override
+				public void run() {
+					if(screenState != TopScreenState.BLINKING_MESSAGE) {
+						blinkingMessageTimer.cancel();
+						blinkingMessageTimer = null;
+						return;
+					}
+
+					Platform.runLater(new Runnable() {
+						@Override
+						public void run() {
+							blinkingMessagePanel.setVisible(on);
+							on = !on;
+						}
+					});
+				}
+			}, 0, DRINK_MAKING_BLINK_PERIOD);
+		}
+
+		public void showShortMessage(String message) {
+			screenState = TopScreenState.SHORT_MESSAGE;
+
+			showTopScreenWidget(shortMessagePanel);
+			shortMessageLabel.setText(message);
+
+			shortMessageTimer = new Timer();
+			shortMessageTimer.schedule(new TimerTask() {
+				@Override
+				public void run() {
+					Platform.runLater(new Runnable() {
+						public void run() {
+							showAndRefreshBalance();
+						}
+					});
+				}
+			}, DRINK_COMPLETE_SHOW_PERIOD);
+		}
+
+		private void hideAllTopScreenWidgets() {
+			balancePanel.setVisible(false);
+			blinkingMessagePanel.setVisible(false);
+			shortMessagePanel.setVisible(false);
+		}
+
+		private void showTopScreenWidget(Node topScreenWidgets) {
+			hideAllTopScreenWidgets();
+			topScreenWidgets.setVisible(true);
+		}
+
+		public void stopAllTimers() {
+			if(blinkingMessageTimer != null) {
+				blinkingMessageTimer.cancel();
+				blinkingMessageTimer = null;
+			}
+
+			if(shortMessageTimer != null) {
+				shortMessageTimer.cancel();
+				shortMessageTimer = null;
+			}
+		}
+	}
+
+	private enum TopScreenState {
+		BALANCE,
+		BLINKING_MESSAGE,
+		SHORT_MESSAGE
+	}
+
 }

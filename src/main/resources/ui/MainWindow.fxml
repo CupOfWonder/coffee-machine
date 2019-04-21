@@ -15,7 +15,7 @@
 <GridPane styleClass="root" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1"
           fx:controller="com.parcel.coffee.controller.MainAppController" onMouseClicked="#onMouse">
    <children>
-       <HBox GridPane.rowIndex="0" GridPane.columnIndex="0" alignment="CENTER" fx:id="balanceLabel">
+       <HBox GridPane.rowIndex="0" GridPane.columnIndex="0" alignment="CENTER" fx:id="balancePanel">
            <Label alignment="CENTER" styleClass="balance-label" text="Баланс:"/>
            <Pane HBox.hgrow="ALWAYS" />
            <Label styleClass="balance-value" fx:id="balanceDigitLabel" GridPane.columnIndex="1"/>
