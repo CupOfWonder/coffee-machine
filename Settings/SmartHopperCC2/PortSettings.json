@@ -1,1 +1,1 @@
-{"_fileName":"PortSettings.json","_folder":"Settings/SmartHopperCC2/","baude":9600,"portName":"/dev/ttyUSB1","timeout":6000}
+{"_fileName":"PortSettings.json","_folder":"Settings/SmartHopperCC2/","baude":9600,"portName":"/dev/ttyUSB0","timeout":6000}

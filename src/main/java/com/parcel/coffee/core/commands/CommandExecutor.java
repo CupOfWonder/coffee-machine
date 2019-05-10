@@ -59,4 +59,11 @@ public class CommandExecutor {
 		}
 	}
 
+	public void shutdown() {
+		synchronized (monitor) {
+			shutdown = true;
+			monitor.notifyAll();
+		}
+	}
+
 }

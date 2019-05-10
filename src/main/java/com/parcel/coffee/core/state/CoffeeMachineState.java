@@ -2,6 +2,7 @@ package com.parcel.coffee.core.state;
 
 public class CoffeeMachineState {
 	private boolean isBusy;
+	private boolean isReconnecting;
 	private Integer selectedDrink;
 
 	private int balance = 0;
@@ -62,5 +63,13 @@ public class CoffeeMachineState {
 
 	public synchronized int getValueForChange() {
 		return valueForChange;
+	}
+
+	public synchronized boolean isReconnecting() {
+		return isReconnecting;
+	}
+
+	public void setReconnecting(boolean reconnecting) {
+		isReconnecting = reconnecting;
 	}
 }

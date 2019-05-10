@@ -204,6 +204,7 @@ public class MainAppController {
 
 					case HOPPER_DISCONNECTED:
 					case BILL_ACCEPTOR_DISCONNECTED:
+					case COIN_ACCEPTOR_DISCONNECTED:
 						runReconnection();
 						break;
 
@@ -215,8 +216,10 @@ public class MainAppController {
 	}
 
 	private void runReconnection() {
-		DeviceReconnector reconnector = new DeviceReconnector();
-		reconnector.reconnectAllDevices();
+		if(!state.isReconnecting()) {
+			addBlinkMessageToQueue(EQUIPMENT_ERROR_MSG);
+			commandExecutor.addCommandToQueue(new ReconnectAllDevicesCommand());
+		}
 	}
 
 	private class AddToBalanceCommand extends SimpleCommand {
@@ -527,16 +530,18 @@ public class MainAppController {
 		SHORT_MESSAGE
 	}
 
-	private class DeviceReconnector {
+	private class ReconnectAllDevicesCommand extends SimpleCommand{
 
 		private static final int DEFAULT_WAIT_PERIOD = 5000;
 
-		public void reconnectAllDevices() {
-			logger.info("Starting device reconnection");
+		@Override
+		protected void execute() {
+			if(state.isReconnecting()) {
+				return;
+			}
+			state.setReconnecting(true);
 
-			ShowBlinkingMessageCommand command = new ShowBlinkingMessageCommand(EQUIPMENT_ERROR_MSG);
-			command.setShutdownAfterCommand(true);
-			commandExecutor.addCommandToQueue(command);
+			logger.info("Starting device reconnection");
 
 			startReconnection();
 		}
@@ -555,13 +560,19 @@ public class MainAppController {
 					paymentSystem.reconnectBillAcceptor();
 				}
 
+				while (paymentSystem.coinAcceptorIsDisconnected()) {
+					ThreadUtils.sleep(DEFAULT_WAIT_PERIOD);
+					paymentSystem.reconnectCoinAcceptor();
+				}
+
 			} while (!paymentSystem.allPresentDevicesAreConnected());
 
 			logger.info("Successfully reconnected!");
 			paymentSystem.enableBillAcception();
 
+			state.setReconnecting(false);
+
 			commandExecutor.addCommandToQueue(new ShowShortMessageCommand(RETURNING_TO_WORK));
-			commandExecutor.run();
 		}
 	}
 
