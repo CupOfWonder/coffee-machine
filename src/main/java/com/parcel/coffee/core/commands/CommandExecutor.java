@@ -18,6 +18,8 @@ public class CommandExecutor {
 	private static final Object monitor = new Object();
 
 	public void run() {
+		shutdown = false;
+
 		commandThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -28,6 +30,8 @@ public class CommandExecutor {
 						ThreadUtils.wait(monitor);
 
 					} while (!shutdown);
+
+					logger.info("Shutting down command executor");
 				}
 			}
 
@@ -36,6 +40,11 @@ public class CommandExecutor {
 					Command command = queue.poll();
 					logger.info("Running now: "+command.getClass().getSimpleName());
 					command.executeIfPossible();
+
+					if(command.needShutdownAfterCommand()) {
+						shutdown = true;
+						break;
+					}
 				}
 			}
 		});
@@ -48,11 +57,6 @@ public class CommandExecutor {
 			queue.add(command);
 			monitor.notifyAll();
 		}
-	}
-
-	public void shutdown() {
-		shutdown = true;
-		monitor.notifyAll();
 	}
 
 }

@@ -20,6 +20,7 @@ import com.parcel.payment.parts.events.PaymentSystemEventHandler;
 import com.parcel.payment.parts.hardware.billacceptor.factory.BillAcceptorType;
 import com.parcel.payment.parts.hardware.coinacceptor.factory.CoinAcceptorType;
 import com.parcel.payment.parts.hardware.hopper.factory.HopperType;
+import com.parcel.payment.parts.utils.ThreadUtils;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -62,6 +63,8 @@ public class MainAppController {
 	private static final String DRINK_IS_MAKING_MSG = "Приготовление";
 	private static final String DRINK_IS_READY_MSG = "Готово!";
 	private static final String HOPPER_NO_MONEY_MSG = "Нет монет для сдачи";
+	private static final String EQUIPMENT_ERROR_MSG = "Ошибка оборудования";
+	private static final String RETURNING_TO_WORK = "Возвращение к работе";
 
 	private CoffeeMachineState state = new CoffeeMachineState();
 	private CommandExecutor commandExecutor = new CommandExecutor();
@@ -73,10 +76,10 @@ public class MainAppController {
 		initUi();
 		initExecutor();
 
-		if(macAddressIsCorrect()) {
+		if(!macAddressIsCorrect()) {
 			initHardware();
 		} else {
-			showBlinkingMessage("Заплатите разработчикам");
+			addBlinkMessageToQueue("Заплатите разработчикам");
 		}
 	}
 
@@ -147,7 +150,7 @@ public class MainAppController {
 	}
 
 	private void initHardware() {
-		initBoard();
+		//initBoard();
 		initPaymentSystem();
 	}
 
@@ -199,12 +202,21 @@ public class MainAppController {
 						commandExecutor.addCommandToQueue(new ShowShortMessageCommand(HOPPER_NO_MONEY_MSG));
 						break;
 
+					case HOPPER_DISCONNECTED:
+					case BILL_ACCEPTOR_DISCONNECTED:
+						runReconnection();
+						break;
 
 				}
 			}
 		});
 		commandExecutor.addCommandToQueue(new RefreshBalanceCommand());
 		launchCoinAmountRefresher(paymentSystem);
+	}
+
+	private void runReconnection() {
+		DeviceReconnector reconnector = new DeviceReconnector();
+		reconnector.reconnectAllDevices();
 	}
 
 	private class AddToBalanceCommand extends SimpleCommand {
@@ -245,7 +257,7 @@ public class MainAppController {
 					state.rememberValueForChange(state.getBalance());
 					
 					state.setBusy(true);
-					showBlinkingMessage(DRINK_IS_MAKING_MSG);
+					addBlinkMessageToQueue(DRINK_IS_MAKING_MSG);
 					commandExecutor.addCommandToQueue(new StartDrinkMakingCommand(selectedDrink));
 				}
 			}
@@ -331,7 +343,7 @@ public class MainAppController {
 		}
 	}
 
-	private void showBlinkingMessage(String message) {
+	private void addBlinkMessageToQueue(String message) {
 		commandExecutor.addCommandToQueue(new ShowBlinkingMessageCommand(message));
 	}
 
@@ -505,6 +517,7 @@ public class MainAppController {
 				shortMessageTimer.cancel();
 				shortMessageTimer = null;
 			}
+
 		}
 	}
 
@@ -512,6 +525,44 @@ public class MainAppController {
 		BALANCE,
 		BLINKING_MESSAGE,
 		SHORT_MESSAGE
+	}
+
+	private class DeviceReconnector {
+
+		private static final int DEFAULT_WAIT_PERIOD = 5000;
+
+		public void reconnectAllDevices() {
+			logger.info("Starting device reconnection");
+
+			ShowBlinkingMessageCommand command = new ShowBlinkingMessageCommand(EQUIPMENT_ERROR_MSG);
+			command.setShutdownAfterCommand(true);
+			commandExecutor.addCommandToQueue(command);
+
+			startReconnection();
+		}
+
+		private void startReconnection() {
+			paymentSystem.disableBillAcception();
+
+			do {
+				while (paymentSystem.hopperIsDisconnected()) {
+					ThreadUtils.sleep(DEFAULT_WAIT_PERIOD);
+					paymentSystem.reconnectHopper();
+				}
+
+				while (paymentSystem.billAcceptorIsDisconnected()) {
+					ThreadUtils.sleep(DEFAULT_WAIT_PERIOD);
+					paymentSystem.reconnectBillAcceptor();
+				}
+
+			} while (!paymentSystem.allPresentDevicesAreConnected());
+
+			logger.info("Successfully reconnected!");
+			paymentSystem.enableBillAcception();
+
+			commandExecutor.addCommandToQueue(new ShowShortMessageCommand(RETURNING_TO_WORK));
+			commandExecutor.run();
+		}
 	}
 
 }
