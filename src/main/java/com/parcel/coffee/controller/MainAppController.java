@@ -76,7 +76,7 @@ public class MainAppController {
 		initUi();
 		initExecutor();
 
-		if(!macAddressIsCorrect()) {
+		if(macAddressIsCorrect()) {
 			initHardware();
 		} else {
 			addBlinkMessageToQueue("Заплатите разработчикам");
@@ -150,7 +150,7 @@ public class MainAppController {
 	}
 
 	private void initHardware() {
-		//initBoard();
+		initBoard();
 		initPaymentSystem();
 	}
 
