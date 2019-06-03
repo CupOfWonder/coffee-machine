@@ -28,7 +28,7 @@
        </HBox>
 
        <GridPane hgap="20" vgap="20" GridPane.columnIndex="0" GridPane.rowIndex="1">
-           <padding><Insets bottom="25" left="25" right="25" top="25" /></padding>
+           <padding><Insets bottom="15" left="15" right="15" top="15" /></padding>
            <children>
                <HBox styleClass="drink" GridPane.rowIndex="0" GridPane.columnIndex="0" alignment="CENTER" maxWidth="Infinity" fx:id="drinkPanel1">
                    <Label alignment="CENTER" styleClass="drink-number" text="1" />

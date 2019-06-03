@@ -3,8 +3,10 @@
     -fx-font-family: Helvetica, Arial, sans-serif;
 
     /* Сюда прописать разрешение экрана */
-    -fx-min-width: 1280;
-    -fx-min-height: 720;
+    -fx-max-width: 1024px;
+    -fx-min-width: 1024px;
+    -fx-min-height: 600px;
+    -fx-max-height: 600px
 }
 .table-view:focused {
     -fx-background-color: -fx-outer-border, -fx-inner-border, -fx-body-color;
@@ -13,26 +15,26 @@
 }
 
 .drink {
-    -fx-padding: 25px 50px 25px 50px;
+    -fx-padding: 5px 10px 5px 10px;
     -fx-border-color: #1852af;
     -fx-border-width: 1px;
     -fx-border-radius: 20px;
     -fx-background-color: transparent;
 
-    -fx-font-size: 3em; /* 12 */
+    -fx-font-size: 2em; /* 12 */
     -fx-text-fill: #1852af;
 
 }
 
 .drink-active {
-    -fx-padding: 25px 50px 25px 50px;
+    -fx-padding: 5px 10px 5px 10px;
     -fx-border-color: #1852af;
     -fx-border-width: 1px;
     -fx-border-radius: 20px;
     -fx-background-color: #1852af;
     -fx-background-radius: 20px;
 
-    -fx-font-size: 3em; /* 12 */
+    -fx-font-size: 2em; /* 12 */
     -fx-text-fill: #FFF !important;
     -fx-max-width: Infinity;
     -fx-max-height: Infinity;
@@ -42,7 +44,7 @@
     -fx-font-size: 4em;
     -fx-text-alignment: center;
     -fx-text-fill: #1852af;
-    -fx-min-height: 200px;
+    -fx-min-height: 100px;
     -fx-max-width: Infinity;
     -fx-alignment: center;
     -fx-font-style: italic;
@@ -50,12 +52,12 @@
 
 
 .drink-number {
-    -fx-min-width: 50px;
+    -fx-min-width: 38px;
     -fx-text-fill: inherit;
     -fx-font-weight: bold;
     -fx-border-width: 2px;
     -fx-border-color: #1852af;
-    -fx-border-radius: 25px;
+    -fx-border-radius: 19px;
 }
 .drink-active .drink-number {
     -fx-border-color: #FFF !important;
@@ -63,7 +65,7 @@
 
 .drink-label {
     -fx-text-fill: inherit;
-    -fx-padding: 50px;
+    -fx-padding: 30px;
 }
 
 .drink-price {
@@ -73,18 +75,18 @@
 }
 
 .default-text {
-    -fx-font-size: 3em;
+    -fx-font-size: 2em;
     -fx-text-fill: #1852af;
 }
 
 .form-label {
-    -fx-font-size: 3em;
+    -fx-font-size: 2em;
     -fx-text-fill: #1852af;
     -fx-min-width: 200px;
 }
 
 .login-form-field {
-    -fx-font-size: 3em;
+    -fx-font-size: 2em;
     -fx-text-fill: #1852af;
 }
 
@@ -109,7 +111,7 @@
     -fx-border-radius: 20px;
     -fx-background-color: transparent;
     -fx-text-fill: #1852af;
-    -fx-font-size: 3em;
+    -fx-font-size: 2em;
 }
 
 .enter-button {
@@ -120,20 +122,20 @@
     -fx-background-color: transparent;
     -fx-text-fill: #1852af;
     -fx-min-width: 700px;
-    -fx-font-size: 3em;
+    -fx-font-size: 2em;
 }
 
 .balance-label {
-    -fx-font-size: 8em;
+    -fx-font-size: 5em;
     -fx-text-fill: #1852af;
-    -fx-padding: 25px;
+    -fx-padding: 10px;
 }
 
 .balance-value {
-    -fx-font-size: 8em;
+    -fx-font-size: 5em;
     -fx-text-fill: #1852af;
     -fx-font-weight: bold;
-    -fx-padding: 25px;
+    -fx-padding: 10px;
 }
 
 .change-password-form-cell {
