@@ -111,7 +111,7 @@ public class MainAppController {
 
 	private void initHardware() {
 		initBoard();
-		initPaymentSystem();
+		//initPaymentSystem();
 	}
 
 	private void initBoard() {
