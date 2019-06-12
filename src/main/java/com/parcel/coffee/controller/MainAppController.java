@@ -1,6 +1,5 @@
 package com.parcel.coffee.controller;
 
-import com.parcel.Board;
 import com.parcel.coffee.SceneSwitcher;
 import com.parcel.coffee.core.commands.ComboCommand;
 import com.parcel.coffee.core.commands.CommandExecutor;
@@ -10,6 +9,7 @@ import com.parcel.coffee.core.drinks.Drink;
 import com.parcel.coffee.core.drinks.DrinkListManager;
 import com.parcel.coffee.core.events.DrinkListChangeHandler;
 import com.parcel.coffee.core.events.EventBus;
+import com.parcel.coffee.core.hardware.Board;
 import com.parcel.coffee.core.hardware.helpers.ButtonPushHandler;
 import com.parcel.coffee.core.hardware.helpers.WorkFinishHandler;
 import com.parcel.coffee.core.payment.CoinAmountRefresher;
@@ -115,10 +115,8 @@ public class MainAppController {
 	}
 
 	private void initBoard() {
-		if(!board.update()) {
-			board.save();
-		}
-		board.generate();
+		board.loadOptionsAndInit();
+
 		for(int buttonNum = 0; buttonNum < 6; buttonNum++) {
 
 			int drinkNumber = buttonNum;
@@ -129,7 +127,7 @@ public class MainAppController {
 				}
 			});
 
-			board.setButtonWorkFinishHandler(buttonNum, new WorkFinishHandler() {
+			board.setWorkFinishHandler(buttonNum, new WorkFinishHandler() {
 				@Override
 				public void onWorkFinish() {
 					state.setBusy(false);
@@ -237,7 +235,7 @@ public class MainAppController {
 		}
 
 		public void execute() {
-			board.executeButtonScript(drinkNum);
+			board.executeButtonAlgorithm(drinkNum);
 		}
 	}
 
@@ -361,6 +359,8 @@ public class MainAppController {
 		if(mouseEvent.getClickCount() == 2) {
 			topScreenWidgetController.stopAllTimers();
 			SceneSwitcher.getInstance().switchToLoginWindow();
+		} else {
+			board.executeButtonAlgorithm(1);
 		}
 	}
 
