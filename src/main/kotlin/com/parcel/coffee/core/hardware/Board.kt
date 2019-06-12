@@ -2,10 +2,13 @@ package com.parcel.coffee.core.hardware
 
 import com.parcel.coffee.core.hardware.driver.VirtualBoardDriver
 import com.parcel.coffee.core.hardware.helpers.ButtonPushHandler
+import com.parcel.coffee.core.hardware.helpers.StopSignalHandler
+import com.parcel.coffee.core.hardware.helpers.TechSensorHandler
 import com.parcel.coffee.core.hardware.helpers.WorkFinishHandler
 import com.parcel.coffee.core.hardware.options.OptionsLoader
 import com.parcel.coffee.core.hardware.options.data.BoardOptions
 import com.parcel.coffee.core.hardware.options.data.ButtonOptions
+import com.parcel.coffee.core.hardware.options.data.TechSensorOptions
 
 class Board {
     private var driver = VirtualBoardDriver();
@@ -21,8 +24,10 @@ class Board {
     private val algorithmExecutor = RelayAlgorithmExecutor(driver)
 
     fun loadOptionsAndInit() {
-        loadOrGenerateOptions();
+        loadOrGenerateOptions()
         initHelperMaps()
+        initTechSensorTriggers()
+        initStopSignalTriggers()
     }
 
     private fun loadOrGenerateOptions() {
@@ -55,6 +60,24 @@ class Board {
         driver.addButtonPushHandler(buttonNum, handler)
     }
 
+    private fun initTechSensorTriggers() {
+        val techSensorOptions : List<TechSensorOptions> = options.technicalSensorOptions;
 
+        techSensorOptions.forEach {
+            driver.addTechSensorHandler(it.sensorNumber, object : TechSensorHandler {
+                override fun onSensorTriggered() {
+                    algorithmExecutor.executeRelayAlgorithm(it.relays)
+                }
+            })
+        }
+    }
+
+    private fun initStopSignalTriggers() {
+        driver.setStopSignalHandler(object : StopSignalHandler {
+            override fun onStopSignalReceived(stopSignalNum: Int) {
+                algorithmExecutor.stopBySignal()
+            }
+        })
+    }
 
 }
