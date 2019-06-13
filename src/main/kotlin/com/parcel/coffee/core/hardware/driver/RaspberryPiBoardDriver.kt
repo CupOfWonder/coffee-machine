@@ -93,8 +93,8 @@ class RaspberryPiBoardDriver : BoardDriver() {
         return digitalInputForPin(techSensors[sensorNum])
     }
 
-    private fun getStopSignalPinInput(sensorNum: Int): GpioPinDigitalInput? {
-        return digitalInputForPin(stopSensors[sensorNum])
+    private fun getStopSignalPinInput(stopSignalNum: Int): GpioPinDigitalInput? {
+        return digitalInputForPin(stopSensors[stopSignalNum])
     }
 
     private fun digitalInputForPin(pin : Pin?) : GpioPinDigitalInput? {
@@ -112,7 +112,7 @@ class RaspberryPiBoardDriver : BoardDriver() {
     override fun setStopSignalHandler(handler: StopSignalHandler) {
         stopSensors.forEach {
             val signalNum = it.key
-            val stopInput = digitalInputForPin(stopSensors[signalNum])
+            val stopInput = getStopSignalPinInput(signalNum)
 
             stopInput?.let {
                 it.addListener(GpioPinListenerDigital {

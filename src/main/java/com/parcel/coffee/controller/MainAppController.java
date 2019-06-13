@@ -112,7 +112,7 @@ public class MainAppController {
 
 	private void initHardware() {
 		initBoard();
-		//initPaymentSystem();
+		initPaymentSystem();
 	}
 
 	private void initBoard() {
@@ -360,19 +360,6 @@ public class MainAppController {
 		if(mouseEvent.getClickCount() == 2) {
 			topScreenWidgetController.stopAllTimers();
 			SceneSwitcher.getInstance().switchToLoginWindow();
-		} else {
-			logger.debug("Starting!");
-			Thread thread = new Thread(new Runnable() {
-				@Override
-				public void run() {
-					sleep(1000);
-					logger.debug("Stop thread worked!");
-					board.emulateStopSignal(1);
-				}
-			});
-			thread.start();
-			board.executeButtonAlgorithm(1);
-
 		}
 	}
 

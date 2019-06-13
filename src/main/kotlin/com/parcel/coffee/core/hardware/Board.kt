@@ -1,6 +1,6 @@
 package com.parcel.coffee.core.hardware
 
-import com.parcel.coffee.core.hardware.driver.VirtualBoardDriver
+import com.parcel.coffee.core.hardware.driver.RaspberryPiBoardDriver
 import com.parcel.coffee.core.hardware.helpers.ButtonPushHandler
 import com.parcel.coffee.core.hardware.helpers.StopSignalHandler
 import com.parcel.coffee.core.hardware.helpers.TechSensorHandler
@@ -11,7 +11,7 @@ import com.parcel.coffee.core.hardware.options.data.ButtonOptions
 import com.parcel.coffee.core.hardware.options.data.TechSensorOptions
 
 class Board {
-    private var driver = VirtualBoardDriver();
+    private var driver = RaspberryPiBoardDriver();
 
     private lateinit var options : BoardOptions
 
