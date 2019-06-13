@@ -20,7 +20,6 @@ import com.parcel.payment.parts.events.PaymentSystemEventHandler;
 import com.parcel.payment.parts.hardware.billacceptor.factory.BillAcceptorType;
 import com.parcel.payment.parts.hardware.coinacceptor.factory.CoinAcceptorType;
 import com.parcel.payment.parts.hardware.hopper.factory.HopperType;
-import com.parcel.payment.parts.utils.ThreadUtils;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -30,6 +29,8 @@ import javafx.scene.layout.HBox;
 import org.apache.log4j.Logger;
 
 import java.util.*;
+
+import static com.parcel.payment.parts.utils.ThreadUtils.sleep;
 
 public class MainAppController {
 
@@ -360,7 +361,18 @@ public class MainAppController {
 			topScreenWidgetController.stopAllTimers();
 			SceneSwitcher.getInstance().switchToLoginWindow();
 		} else {
+			logger.debug("Starting!");
+			Thread thread = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					sleep(1000);
+					logger.debug("Stop thread worked!");
+					board.emulateStopSignal(1);
+				}
+			});
+			thread.start();
 			board.executeButtonAlgorithm(1);
+
 		}
 	}
 
@@ -511,17 +523,17 @@ public class MainAppController {
 
 			do {
 				while (paymentSystem.hopperIsDisconnected()) {
-					ThreadUtils.sleep(DEFAULT_WAIT_PERIOD);
+					sleep(DEFAULT_WAIT_PERIOD);
 					paymentSystem.reconnectHopper();
 				}
 
 				while (paymentSystem.billAcceptorIsDisconnected()) {
-					ThreadUtils.sleep(DEFAULT_WAIT_PERIOD);
+					sleep(DEFAULT_WAIT_PERIOD);
 					paymentSystem.reconnectBillAcceptor();
 				}
 
 				while (paymentSystem.coinAcceptorIsDisconnected()) {
-					ThreadUtils.sleep(DEFAULT_WAIT_PERIOD);
+					sleep(DEFAULT_WAIT_PERIOD);
 					paymentSystem.reconnectCoinAcceptor();
 				}
 

@@ -30,7 +30,6 @@ class RelayAlgorithmExecutor(private val driver: BoardDriver) {
     }
 
     private fun executeRelaySingleJob(relayOpts: RelayJobOptions, relayFinishLatch: CountDownLatch? = null) {
-        logger.debug("RelayOptions: $relayOpts")
         var thread = Thread(Runnable {
             try {
                 Thread.sleep(relayOpts.timeOn)
@@ -45,7 +44,7 @@ class RelayAlgorithmExecutor(private val driver: BoardDriver) {
                 relayFinishLatch?.countDown()
                 relayJobMap.relayThreadFinished(relayOpts.relayNumber, Thread.currentThread())
             } catch (e : InterruptedException) {
-
+                logger.debug("Relay ${relayOpts.relayNumber} thread was interrupted")
             }
         })
 
@@ -63,17 +62,20 @@ class RelayAlgorithmExecutor(private val driver: BoardDriver) {
         driver.signalToRelay(relayNum, signal)
     }
 
-    fun stopBySignal(relayNum: Int) {
-        logger.info("Received stop signal on relay $relayNum")
+    fun stopBySignal(signalNum: Int) {
+        logger.info("Received stop signal $signalNum")
 
-        val jobInfoList : List<RelayJobInfo> = relayJobMap.currentJobsForRelayNumber(relayNum)
+        val jobInfoList : List<RelayJobInfo> = relayJobMap.currentJobsForSignalNumber(signalNum)
 
         jobInfoList.forEach {
             it.thread.interrupt()
             it.countDownLatch?.countDown()
+
+            val relayNum = it.jobOptions.relayNumber;
             closeRelay(relayNum, it.jobOptions.inverse)
+            logger.info("Stopped relay $relayNum on signal $signalNum")
         }
-        relayJobMap.removeAllJobs(relayNum)
+        relayJobMap.removeAllJobs(jobInfoList)
 
     }
 }

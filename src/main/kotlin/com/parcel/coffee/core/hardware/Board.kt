@@ -75,9 +75,13 @@ class Board {
     private fun initStopSignalTriggers() {
         driver.setStopSignalHandler(object : StopSignalHandler {
             override fun onStopSignalReceived(stopSignalNum: Int) {
-                algorithmExecutor.stopBySignal()
+                algorithmExecutor.stopBySignal(stopSignalNum)
             }
         })
+    }
+
+    fun emulateStopSignal(stopSignalNum: Int) {
+        algorithmExecutor.stopBySignal(stopSignalNum)
     }
 
 }

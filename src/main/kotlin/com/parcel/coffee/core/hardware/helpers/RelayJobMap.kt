@@ -8,7 +8,13 @@ class RelayJobMap {
     private val jobMap = ConcurrentHashMap<Int, MutableList<RelayJobInfo>>()
 
     fun rememberRelayThread(relayNum: Int, thread: Thread, jobOptions: RelayJobOptions, relayFinishLatch: CountDownLatch?) {
-        var list = jobMap[relayNum] ?: ArrayList()
+        var list = jobMap[relayNum]
+
+        if(list == null) {
+            list = ArrayList()
+            jobMap[relayNum] = list
+        }
+
         val jobInfo = RelayJobInfo(thread, jobOptions, relayFinishLatch)
         list.add(jobInfo)
     }
@@ -21,12 +27,21 @@ class RelayJobMap {
         }
     }
 
-    fun currentJobsForRelayNumber(relayNum: Int) : List<RelayJobInfo> {
-        return jobMap[relayNum] ?: emptyList()
+    fun removeAllJobs(jobsToRemove : List<RelayJobInfo>) {
+        for(jobList in jobMap.values) {
+            jobList.removeAll(jobsToRemove)
+        }
     }
 
-    fun removeAllJobs(relayNum: Int) {
-        jobMap.remove(relayNum)
+    fun currentJobsForSignalNumber(signalNum: Int): List<RelayJobInfo> {
+        var result = ArrayList<RelayJobInfo>()
+        for(jobList in jobMap.values) {
+            jobList
+                    .filter { it.jobOptions.stopSignal == signalNum }
+                    .forEach {result.add(it) }
+        }
+
+        return result;
     }
 
 }
