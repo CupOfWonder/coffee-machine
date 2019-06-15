@@ -46,7 +46,7 @@ public class MainAppController {
 	@FXML
 	public HBox drinkPanel1, drinkPanel2, drinkPanel3, drinkPanel4, drinkPanel5, drinkPanel6;
 
-	private List<DrinkLabelPair> drinkLabelPairs = new ArrayList<>();
+	private Map<Integer, DrinkLabelPair> drinkLabelPairs = new HashMap<>();
 	private Map<Integer, HBox> buttonPanelMap = new HashMap<>();
 
 	private Board board = new Board();
@@ -85,19 +85,19 @@ public class MainAppController {
 	private void initUi() {
 		topScreenWidgetController = new TopScreenWidgetController();
 
-		drinkLabelPairs.add(new DrinkLabelPair(name1, price1));
-		drinkLabelPairs.add(new DrinkLabelPair(name2, price2));
-		drinkLabelPairs.add(new DrinkLabelPair(name3, price3));
-		drinkLabelPairs.add(new DrinkLabelPair(name4, price4));
-		drinkLabelPairs.add(new DrinkLabelPair(name5, price5));
-		drinkLabelPairs.add(new DrinkLabelPair(name6, price6));
+		drinkLabelPairs.put(1, new DrinkLabelPair(name1, price1));
+		drinkLabelPairs.put(2, new DrinkLabelPair(name2, price2));
+		drinkLabelPairs.put(3, new DrinkLabelPair(name3, price3));
+		drinkLabelPairs.put(4, new DrinkLabelPair(name4, price4));
+		drinkLabelPairs.put(5, new DrinkLabelPair(name5, price5));
+		drinkLabelPairs.put(6, new DrinkLabelPair(name6, price6));
 
-		buttonPanelMap.put(0, drinkPanel1);
-		buttonPanelMap.put(1, drinkPanel2);
-		buttonPanelMap.put(2, drinkPanel3);
-		buttonPanelMap.put(3, drinkPanel4);
-		buttonPanelMap.put(4, drinkPanel5);
-		buttonPanelMap.put(5, drinkPanel6);
+		buttonPanelMap.put(1, drinkPanel1);
+		buttonPanelMap.put(2, drinkPanel2);
+		buttonPanelMap.put(3, drinkPanel3);
+		buttonPanelMap.put(4, drinkPanel4);
+		buttonPanelMap.put(5, drinkPanel5);
+		buttonPanelMap.put(6, drinkPanel6);
 
 
 		EventBus.getInstance().addDrinkListChangeHandler(new DrinkListChangeHandler() {
@@ -108,6 +108,7 @@ public class MainAppController {
 		});
 
 		readLabelsFromFile();
+		commandExecutor.addCommandToQueue(new SelectDrinkCommand(1));
 	}
 
 	private void initHardware() {
@@ -118,7 +119,7 @@ public class MainAppController {
 	private void initBoard() {
 		board.loadOptionsAndInit();
 
-		for(int buttonNum = 0; buttonNum < 6; buttonNum++) {
+		for(int buttonNum = 1; buttonNum <= 6; buttonNum++) {
 
 			int drinkNumber = buttonNum;
 			board.setButtonPushHandler(buttonNum, new ButtonPushHandler() {
@@ -284,7 +285,7 @@ public class MainAppController {
 	}
 
 	private void doUnselectOnInterface() {
-		for(int drink = 0; drink < 6; drink++) {
+		for(int drink = 1; drink <= 6; drink++) {
 			HBox panel = buttonPanelMap.get(drink);
 			panel.getStyleClass().remove("drink-active");
 			panel.getStyleClass().add("drink");
@@ -346,13 +347,15 @@ public class MainAppController {
 		List<Drink> drinks = drinkListManager.loadCurrentPricesAndTitles();
 
 		for(int i = 0; i < drinks.size(); i++) {
+			int drinkNum = i + 1;
+
 			Drink drink = drinks.get(i);
-			DrinkLabelPair labelPair = drinkLabelPairs.get(i);
+			DrinkLabelPair labelPair = drinkLabelPairs.get(drinkNum);
 
 			labelPair.setName(drink.getName());
 			labelPair.setPrice(drink.getPrice());
 
-			shownDrinkMap.put(i, drink);
+			shownDrinkMap.put(drinkNum, drink);
 		}
 	}
 
@@ -405,6 +408,7 @@ public class MainAppController {
 		public void refreshBalance() {
 			int roubles = state.getBalance();
 			balanceDigitLabel.setText(roubles+" р");
+			System.out.println("Refreshed balance!");
 		}
 
 		public void showBlinkingMessage(String message) {
