@@ -30,5 +30,10 @@ class RelayJobOptions(@Expose val relayNumber: Int, @Expose val timeOn: Long, @E
         if(!BoardOptions.ALLOWED_RELAY_NUMBERS.contains(relayNumber)) {
             throw ConfigurationException("Номер реле $relayNumber недопустим")
         }
+        stopSignal.let {
+            if(!BoardOptions.ALLOWED_STOP_SIGNAL_NUMBERS.contains(it)) {
+                throw ConfigurationException("Номер стоп-сигнала $stopSignal недопустим")
+            }
+        }
     }
 }
