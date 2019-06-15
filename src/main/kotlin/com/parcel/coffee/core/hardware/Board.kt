@@ -1,17 +1,17 @@
 package com.parcel.coffee.core.hardware
 
 import com.parcel.coffee.core.hardware.driver.RaspberryPiBoardDriver
-import com.parcel.coffee.core.hardware.helpers.ButtonPushHandler
-import com.parcel.coffee.core.hardware.helpers.StopSignalHandler
-import com.parcel.coffee.core.hardware.helpers.TechSensorHandler
-import com.parcel.coffee.core.hardware.helpers.WorkFinishHandler
+import com.parcel.coffee.core.hardware.helpers.*
 import com.parcel.coffee.core.hardware.options.OptionsLoader
 import com.parcel.coffee.core.hardware.options.data.BoardOptions
 import com.parcel.coffee.core.hardware.options.data.ButtonOptions
 import com.parcel.coffee.core.hardware.options.data.TechSensorOptions
+import org.apache.log4j.Logger
 
 class Board {
-    private var driver = RaspberryPiBoardDriver();
+    private val logger = Logger.getLogger(this.javaClass)
+
+    private var driver = RaspberryPiBoardDriver()
 
     private lateinit var options : BoardOptions
 
@@ -33,6 +33,14 @@ class Board {
     private fun loadOrGenerateOptions() {
         val optionsLoader = OptionsLoader()
         this.options = optionsLoader.loadOptionsOrGenerateDefault()
+
+        try {
+            this.options.validate()
+        } catch (e : ConfigurationException) {
+            logger.error("Ошибка конфигурации: ${e.message}")
+            System.exit(1);
+        }
+
     }
 
     private fun initHelperMaps() {

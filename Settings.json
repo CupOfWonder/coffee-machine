@@ -48,7 +48,7 @@
         {
           "inverse": false,
           "name": "Напишите сюда имя реле что бы не путаться.",
-          "relayNumber": 0,
+          "relayNumber": 1,
           "timeOn": 4,
           "timeJob": 8
         }
@@ -112,7 +112,7 @@
         {
           "inverse": false,
           "name": "Напишите сюда имя реле что бы не путаться.",
-          "relayNumber": 0,
+          "relayNumber": 1,
           "timeOn": 1,
           "timeJob": 3
         },
@@ -140,7 +140,7 @@
         {
           "inverse": false,
           "name": "Напишите сюда имя реле что бы не путаться.",
-          "relayNumber": 0,
+          "relayNumber": 1,
           "timeOn": 1,
           "timeJob": 3
         },

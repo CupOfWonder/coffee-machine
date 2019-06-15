@@ -2,12 +2,11 @@ package com.parcel.coffee.core.hardware.helpers
 
 import com.parcel.coffee.core.hardware.options.data.RelayJobOptions
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.CountDownLatch
 
 class RelayJobMap {
     private val jobMap = ConcurrentHashMap<Int, MutableList<RelayJobInfo>>()
 
-    fun rememberRelayThread(relayNum: Int, thread: Thread, jobOptions: RelayJobOptions, relayFinishLatch: CountDownLatch?) {
+    fun rememberRelayThread(relayNum: Int, thread: Thread, jobOptions: RelayJobOptions) {
         var list = jobMap[relayNum]
 
         if(list == null) {
@@ -15,7 +14,7 @@ class RelayJobMap {
             jobMap[relayNum] = list
         }
 
-        val jobInfo = RelayJobInfo(thread, jobOptions, relayFinishLatch)
+        val jobInfo = RelayJobInfo(thread, jobOptions)
         list.add(jobInfo)
     }
 

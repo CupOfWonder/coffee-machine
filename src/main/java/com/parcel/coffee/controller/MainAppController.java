@@ -132,6 +132,7 @@ public class MainAppController {
 			board.setWorkFinishHandler(buttonNum, new WorkFinishHandler() {
 				@Override
 				public void onWorkFinish() {
+					logger.debug("Work finish handler worked!");
 					state.setBusy(false);
 					handleDrinkCompletion();
 				}
@@ -363,6 +364,9 @@ public class MainAppController {
 		if(mouseEvent.getClickCount() == 2) {
 			topScreenWidgetController.stopAllTimers();
 			SceneSwitcher.getInstance().switchToLoginWindow();
+		} else {
+			commandExecutor.addCommandToQueue(new AddToBalanceCommand(100));
+			commandExecutor.addCommandToQueue(new SelectDrinkCommand(1));
 		}
 	}
 
@@ -408,7 +412,6 @@ public class MainAppController {
 		public void refreshBalance() {
 			int roubles = state.getBalance();
 			balanceDigitLabel.setText(roubles+" р");
-			System.out.println("Refreshed balance!");
 		}
 
 		public void showBlinkingMessage(String message) {

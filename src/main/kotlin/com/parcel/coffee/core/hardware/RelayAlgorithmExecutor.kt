@@ -42,13 +42,17 @@ class RelayAlgorithmExecutor(private val driver: BoardDriver) {
                 }
 
                 relayFinishLatch?.countDown()
+
+
                 relayJobMap.relayThreadFinished(relayOpts.relayNumber, Thread.currentThread())
+
             } catch (e : InterruptedException) {
                 logger.debug("Relay ${relayOpts.relayNumber} thread was interrupted")
+                relayFinishLatch?.countDown()
             }
         })
 
-        relayJobMap.rememberRelayThread(relayOpts.relayNumber, thread, relayOpts, relayFinishLatch)
+        relayJobMap.rememberRelayThread(relayOpts.relayNumber, thread, relayOpts)
         thread.start()
     }
 
@@ -69,7 +73,6 @@ class RelayAlgorithmExecutor(private val driver: BoardDriver) {
 
         jobInfoList.forEach {
             it.thread.interrupt()
-            it.countDownLatch?.countDown()
 
             val relayNum = it.jobOptions.relayNumber;
             closeRelay(relayNum, it.jobOptions.inverse)

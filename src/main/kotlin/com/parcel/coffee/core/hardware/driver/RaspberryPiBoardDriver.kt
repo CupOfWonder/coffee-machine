@@ -42,6 +42,8 @@ class RaspberryPiBoardDriver : BoardDriver() {
             16 to RaspiPin.GPIO_09
     )
 
+    private val relayPinOutputs = HashMap<Int, GpioPinDigitalOutput>()
+
     private val techSensors = mapOf<Int, Pin> (
             1 to RaspiPin.GPIO_12,
             2 to RaspiPin.GPIO_14
@@ -64,14 +66,22 @@ class RaspberryPiBoardDriver : BoardDriver() {
     }
 
     override fun signalToRelay(relayNum: Int, on: Boolean) {
+        logger.debug("Sent signal "+ (if(on) "ON" else "OFF") + " to relay $relayNum" )
+
         val pin : GpioPinDigitalOutput? = getRelayPinOutput(relayNum)
 
         if(on) pin?.high() else pin?.low()
     }
 
     private fun getRelayPinOutput(relayNum: Int): GpioPinDigitalOutput? {
-        val pin = relayPins[relayNum]
-        return gpio.provisionDigitalOutputPin(pin)
+        if(relayPinOutputs[relayNum] != null) {
+            return relayPinOutputs[relayNum];
+        } else {
+            val pin = relayPins[relayNum]
+            val output : GpioPinDigitalOutput = gpio.provisionDigitalOutputPin(pin)
+            relayPinOutputs[relayNum] = output;
+            return output;
+        }
     }
 
     private fun getButtonPinInput(buttonNum: Int) : GpioPinDigitalInput? {
