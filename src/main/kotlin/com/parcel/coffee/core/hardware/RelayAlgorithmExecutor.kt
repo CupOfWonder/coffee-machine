@@ -51,10 +51,6 @@ class RelayAlgorithmExecutor(private val driver: BoardDriver) {
 
 
                 relayJobMap.relayJobFinished(relayOpts.relayNumber, jobInfo)
-
-                val jobList = relayJobMap.getAllRelayJobs(relayOpts.relayNumber)
-                logger.debug("Job list size on relay ${relayOpts.relayNumber} : ${jobList?.size}")
-
             } catch (e : InterruptedException) {
                 logger.debug("Relay ${relayOpts.relayNumber} thread was interrupted")
                 relayFinishLatch?.countDown()
