@@ -92,6 +92,7 @@ class RelayAlgorithmExecutor(private val driver: BoardDriver) {
             it.thread.interrupt()
 
             val relayNum = it.jobOptions.relayNumber;
+            it.jobStatus = RelayJobStatus.READY_TO_CLOSE;
             closeRelayOnNoOtherJob(relayNum, it.jobOptions.inverse)
             logger.info("Stopped relay $relayNum on signal $signalNum")
         }

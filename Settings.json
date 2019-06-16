@@ -7,24 +7,113 @@
           "inverse": true,
           "name": "Напишите сюда имя реле что бы не путаться.",
           "relayNumber": 1,
-          "timeOn": 1000,
-          "timeJob": 3000,
-          "stopSignal": 1
+          "timeOn": 1500,
+          "timeJob": 500
         },
         {
-          "inverse": false,
+          "inverse":true,
           "name": "Напишите сюда имя реле что бы не путаться.",
           "relayNumber": 2,
           "timeOn": 2000,
-          "timeJob": 1000
+          "timeJob": 500
         },
         {
-          "inverse": false,
+          "inverse": true,
           "name": "Напишите сюда имя реле что бы не путаться.",
           "relayNumber": 3,
+          "timeOn": 2500,
+          "timeJob": 500
+        },
+        {
+          "inverse": true,
+          "name": "Напишите сюда имя реле что бы не путаться.",
+          "relayNumber": 4,
           "timeOn": 3000,
-          "timeJob": 3000,
-          "stopSignal": 2
+          "timeJob": 500
+        },
+        {
+          "inverse": true,
+          "name": "Напишите сюда имя реле что бы не путаться.",
+          "relayNumber": 5,
+          "timeOn": 3500,
+          "timeJob": 500
+        },
+        {
+          "inverse": true,
+          "name": "truba vniz.",
+          "relayNumber": 6,
+          "timeOn": 4000,
+          "timeJob": 500
+        },
+        {
+          "inverse": true,
+          "name": "Напишите сюда имя реле что бы не путаться.",
+          "relayNumber": 7,
+          "timeOn": 4500,
+          "timeJob": 500
+        },
+        {
+          "inverse": true,
+          "name": "Напишите сюда имя реле что бы не путаться.",
+          "relayNumber": 8,
+          "timeOn": 5000,
+          "timeJob": 500
+        },
+        {
+          "inverse": true,
+          "name": "Напишите сюда имя реле что бы не путаться.",
+          "relayNumber": 9,
+          "timeOn": 5500,
+          "timeJob": 500
+        },
+        {
+          "inverse": true,
+          "name": "Напишите сюда имя реле что бы не путаться.",
+          "relayNumber": 10,
+          "timeOn": 6000,
+          "timeJob": 500
+        },
+        {
+          "inverse": true,
+          "name": "Напишите сюда имя реле что бы не путаться.",
+          "relayNumber": 11,
+          "timeOn": 6500,
+          "timeJob": 500
+        },
+        {
+          "inverse": true,
+          "name": "Напишите сюда имя реле что бы не путаться.",
+          "relayNumber": 12,
+          "timeOn": 7000,
+          "timeJob": 500
+        },
+        {
+          "inverse": true,
+          "name": "Напишите сюда имя реле что бы не путаться.",
+          "relayNumber": 13,
+          "timeOn": 7500,
+          "timeJob": 500
+        },
+        {
+          "inverse": true,
+          "name": "Напишите сюда имя реле что бы не путаться.",
+          "relayNumber": 14,
+          "timeOn": 8000,
+          "timeJob": 500
+        },
+        {
+          "inverse": true,
+          "name": "Напишите сюда имя реле что бы не путаться.",
+          "relayNumber": 15,
+          "timeOn": 8500,
+          "timeJob": 500
+        },
+        {
+          "inverse": true,
+          "name": "Напишите сюда имя реле что бы не путаться.",
+          "relayNumber": 16,
+          "timeOn": 9000,
+          "timeJob": 500
         }
       ]
     },
@@ -32,25 +121,74 @@
       "buttonNumber": 2,
       "relays": [
         {
-          "inverse": false,
-          "name": "Напишите сюда имя реле что бы не путаться.",
+          "inverse": true,
+          "name": "Стол к стакановыдаче .",
           "relayNumber": 2,
-          "timeOn": 1,
-          "timeJob": 3
+          "timeOn": 1000,
+          "timeJob": 2500
         },
         {
-          "inverse": false,
-          "name": "Напишите сюда имя реле что бы не путаться.",
-          "relayNumber": 1,
-          "timeOn": 2,
-          "timeJob": 1
+          "inverse": true,
+          "name": "Стол в нишу выдачи .",
+          "relayNumber": 3,
+          "timeOn": 8000,
+          "timeJob": 2500
         },
         {
-          "inverse": false,
+          "inverse": true,
+          "name": " Мотор стакановыдачи.",
+          "relayNumber": 15,
+          "timeOn": 1000,
+          "timeJob": 6000,
+        },
+        {
+          "inverse": true,
+          "name": " Труба вверх.",
+          "relayNumber": 6,
+          "timeOn": 11000,
+          "timeJob": 2000
+        },
+        {
+          "inverse": true,
+          "name": "Сироп №2 .",
+          "relayNumber": 8,
+          "timeOn": 14000,
+          "timeJob": 1000
+        },
+        {
+          "inverse": true,
+          "name": "Затвор вверх.",
+          "relayNumber": 9,
+          "timeOn": 14000,
+          "timeJob": 1000
+        },
+        {
+          "inverse": true,
+          "name": "Затвор вниз.",
+          "relayNumber": 10,
+          "timeOn": 16000,
+          "timeJob": 1000
+        },
+        {
+          "inverse": true,
+          "name": "Труба вниз.",
+          "relayNumber": 7,
+          "timeOn": 17000,
+          "timeJob": 2000
+        },
+        {
+          "inverse": true,
+          "name": "Шторка вверх.",
+          "relayNumber": 12,
+          "timeOn": 20000,
+          "timeJob": 2000
+        },
+        {
+          "inverse": true,
           "name": "Напишите сюда имя реле что бы не путаться.",
-          "relayNumber": 1,
-          "timeOn": 4,
-          "timeJob": 8
+          "relayNumber": 13,
+          "timeOn": 25000,
+          "timeJob": 2000
         }
       ]
     },
@@ -58,25 +196,25 @@
       "buttonNumber": 3,
       "relays": [
         {
-          "inverse": false,
+          "inverse": true,
           "name": "Напишите сюда имя реле что бы не путаться.",
           "relayNumber": 3,
-          "timeOn": 1,
-          "timeJob": 3
+          "timeOn": 1000,
+          "timeJob": 3000
         },
         {
-          "inverse": false,
+          "inverse": true,
           "name": "Напишите сюда имя реле что бы не путаться.",
           "relayNumber": 4,
-          "timeOn": 2,
-          "timeJob": 1
+          "timeOn": 2000,
+          "timeJob": 1000
         },
         {
-          "inverse": false,
+          "inverse": true,
           "name": "Напишите сюда имя реле что бы не путаться.",
           "relayNumber": 5,
-          "timeOn": 4,
-          "timeJob": 8
+          "timeOn": 4000,
+          "timeJob": 8000
         }
       ]
     },
@@ -84,25 +222,25 @@
       "buttonNumber": 4,
       "relays": [
         {
-          "inverse": false,
+          "inverse": true,
           "name": "Напишите сюда имя реле что бы не путаться.",
           "relayNumber": 2,
-          "timeOn": 1,
-          "timeJob": 3
+          "timeOn": 1000,
+          "timeJob": 3000
         },
         {
-          "inverse": false,
+          "inverse": true,
           "name": "Напишите сюда имя реле что бы не путаться.",
           "relayNumber": 1,
-          "timeOn": 2,
-          "timeJob": 1
+          "timeOn": 2000,
+          "timeJob": 1000
         },
         {
-          "inverse": false,
+          "inverse": true,
           "name": "Напишите сюда имя реле что бы не путаться.",
           "relayNumber": 1,
-          "timeOn": 4,
-          "timeJob": 8
+          "timeOn": 4000,
+          "timeJob": 8000
         }
       ]
     },
@@ -110,25 +248,25 @@
       "buttonNumber": 5,
       "relays": [
         {
-          "inverse": false,
+          "inverse": true,
           "name": "Напишите сюда имя реле что бы не путаться.",
-          "relayNumber": 1,
-          "timeOn": 1,
-          "timeJob": 3
+          "relayNumber": 6,
+          "timeOn": 1000,
+          "timeJob": 3000
         },
         {
-          "inverse": false,
+          "inverse": true,
           "name": "Напишите сюда имя реле что бы не путаться.",
-          "relayNumber": 1,
-          "timeOn": 2,
+          "relayNumber": 7,
+          "timeOn": 2000,
           "timeJob": 1
         },
         {
-          "inverse": false,
+          "inverse": true,
           "name": "Напишите сюда имя реле что бы не путаться.",
-          "relayNumber": 4,
-          "timeOn": 4,
-          "timeJob": 8
+          "relayNumber": 8,
+          "timeOn": 4000,
+          "timeJob": 8000
         }
       ]
     }
@@ -138,25 +276,116 @@
       "sensorNumber": 1,
       "relays": [
         {
-          "inverse": false,
+          "inverse": true,
           "name": "Напишите сюда имя реле что бы не путаться.",
           "relayNumber": 1,
-          "timeOn": 1,
-          "timeJob": 3
+          "timeOn": 1500,
+          "timeJob": 500
         },
         {
-          "inverse": false,
+          "inverse": true,
           "name": "Напишите сюда имя реле что бы не путаться.",
-          "relayNumber": 1,
-          "timeOn": 2,
-          "timeJob": 1
+          "relayNumber": 2,
+          "timeOn": 2000,
+          "timeJob": 500
         },
         {
-          "inverse": false,
+          "inverse": true,
+          "name": "Напишите сюда имя реле что бы не путаться.",
+          "relayNumber": 3,
+          "timeOn": 2500,
+          "timeJob": 500
+        },
+        {
+          "inverse": true,
           "name": "Напишите сюда имя реле что бы не путаться.",
           "relayNumber": 4,
-          "timeOn": 4,
-          "timeJob": 8
+          "timeOn": 3000,
+          "timeJob": 500
+        },
+        {
+          "inverse": true,
+          "name": "Напишите сюда имя реле что бы не путаться.",
+          "relayNumber": 5,
+          "timeOn": 3500,
+          "timeJob": 500
+        },
+        {
+          "inverse": true,
+          "name": "truba vniz.",
+          "relayNumber": 6,
+          "timeOn": 4000,
+          "timeJob": 500
+        },
+        {
+          "inverse": true,
+          "name": "Напишите сюда имя реле что бы не путаться.",
+          "relayNumber": 7,
+          "timeOn": 4500,
+          "timeJob": 500
+        },
+        {
+          "inverse": true,
+          "name": "Напишите сюда имя реле что бы не путаться.",
+          "relayNumber": 8,
+          "timeOn": 5000,
+          "timeJob": 500
+        },
+        {
+          "inverse": true,
+          "name": "Напишите сюда имя реле что бы не путаться.",
+          "relayNumber": 9,
+          "timeOn": 5500,
+          "timeJob": 500
+        },
+        {
+          "inverse": true,
+          "name": "Напишите сюда имя реле что бы не путаться.",
+          "relayNumber": 10,
+          "timeOn": 6000,
+          "timeJob": 500
+        },
+        {
+          "inverse": true,
+          "name": "Напишите сюда имя реле что бы не путаться.",
+          "relayNumber": 11,
+          "timeOn": 6500,
+          "timeJob": 500
+        },
+        {
+          "inverse": true,
+          "name": "Напишите сюда имя реле что бы не путаться.",
+          "relayNumber": 12,
+          "timeOn": 7000,
+          "timeJob": 500
+        },
+        {
+          "inverse": true,
+          "name": "Напишите сюда имя реле что бы не путаться.",
+          "relayNumber": 13,
+          "timeOn": 7500,
+          "timeJob": 500
+        },
+        {
+          "inverse": true,
+          "name": "Напишите сюда имя реле что бы не путаться.",
+          "relayNumber": 14,
+          "timeOn": 8000,
+          "timeJob": 500
+        },
+        {
+          "inverse": true,
+          "name": "Напишите сюда имя реле что бы не путаться.",
+          "relayNumber": 15,
+          "timeOn": 8500,
+          "timeJob": 500
+        },
+        {
+          "inverse": true,
+          "name": "Напишите сюда имя реле что бы не путаться.",
+          "relayNumber": 16,
+          "timeOn": 9000,
+          "timeJob": 500
         }
       ]
     }

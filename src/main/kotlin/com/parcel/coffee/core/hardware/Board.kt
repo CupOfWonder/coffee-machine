@@ -1,6 +1,6 @@
 package com.parcel.coffee.core.hardware
 
-import com.parcel.coffee.core.hardware.driver.RaspberryPiBoardDriver
+import com.parcel.coffee.core.hardware.driver.VirtualBoardDriver
 import com.parcel.coffee.core.hardware.helpers.*
 import com.parcel.coffee.core.hardware.options.OptionsLoader
 import com.parcel.coffee.core.hardware.options.data.BoardOptions
@@ -11,7 +11,7 @@ import org.apache.log4j.Logger
 class Board {
     private val logger = Logger.getLogger(this.javaClass)
 
-    private var driver = RaspberryPiBoardDriver()
+    private var driver = VirtualBoardDriver()
 
     private lateinit var options : BoardOptions
 
@@ -32,9 +32,9 @@ class Board {
 
     private fun loadOrGenerateOptions() {
         val optionsLoader = OptionsLoader()
-        this.options = optionsLoader.loadOptionsOrGenerateDefault()
 
         try {
+            this.options = optionsLoader.loadOptionsOrGenerateDefault()
             this.options.validate()
         } catch (e : ConfigurationException) {
             logger.error("Ошибка конфигурации: ${e.message}")

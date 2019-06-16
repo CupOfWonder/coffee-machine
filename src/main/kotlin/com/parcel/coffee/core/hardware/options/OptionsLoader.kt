@@ -6,6 +6,7 @@ import com.parcel.coffee.core.hardware.options.data.ButtonOptions
 import com.parcel.coffee.core.hardware.options.data.RelayJobOptions
 import org.apache.log4j.Logger
 import java.io.File
+import javax.naming.ConfigurationException
 
 class OptionsLoader {
 
@@ -14,20 +15,25 @@ class OptionsLoader {
     private val logger = Logger.getLogger(this.javaClass)
 
     fun loadOptionsOrGenerateDefault() : BoardOptions {
-        val file = File(settingsFileName)
-        //проверяем, что если файл не существует то создаем его
-        if (file.exists()) {
-            val options = fromString(file.readText())
-            logger.info("Successfully loaded options from $settingsFileName")
-            logger.info("currentOptions: "+optionsToJson(options))
-            return options;
-        } else {
-            logger.info("File $settingsFileName not found! Creating default one")
+        try {
+            val file = File(settingsFileName)
+            //проверяем, что если файл не существует то создаем его
+            if (file.exists()) {
+                val options = fromString(file.readText())
+                logger.info("Successfully loaded options from $settingsFileName")
+                logger.info("currentOptions: " + optionsToJson(options))
+                return options;
+            } else {
+                logger.info("File $settingsFileName not found! Creating default one")
 
-            val defaultOptions = defaultOptions()
-            saveOptions(defaultOptions)
+                val defaultOptions = defaultOptions()
+                saveOptions(defaultOptions)
 
-            return defaultOptions
+                return defaultOptions
+            }
+        } catch (e: Exception) {
+            logger.error("Couldn't read options", e)
+            throw ConfigurationException(e.message)
         }
     }
 
