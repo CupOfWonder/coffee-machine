@@ -3,6 +3,7 @@ package com.parcel.coffee.core.hardware
 import com.parcel.coffee.core.hardware.driver.BoardDriver
 import com.parcel.coffee.core.hardware.helpers.RelayJobInfo
 import com.parcel.coffee.core.hardware.helpers.RelayJobMap
+import com.parcel.coffee.core.hardware.helpers.RelayJobStatus
 import com.parcel.coffee.core.hardware.helpers.WorkFinishHandler
 import com.parcel.coffee.core.hardware.options.data.RelayJobOptions
 import org.apache.log4j.Logger
@@ -32,19 +33,27 @@ class RelayAlgorithmExecutor(private val driver: BoardDriver) {
     private fun executeRelaySingleJob(relayOpts: RelayJobOptions, relayFinishLatch: CountDownLatch? = null) {
         var thread = Thread(Runnable {
             try {
+                val jobInfo : RelayJobInfo
+                        = relayJobMap.rememberJobStarted(relayOpts.relayNumber, Thread.currentThread(), relayOpts)
                 Thread.sleep(relayOpts.timeOn)
 
+                jobInfo.jobStatus = RelayJobStatus.WORKING
                 openRelay(relayOpts.relayNumber, relayOpts.inverse)
 
                 relayOpts.timeJob?.let {
                     Thread.sleep(it)
-                    closeRelay(relayOpts.relayNumber, relayOpts.inverse)
+
+                    jobInfo.jobStatus = RelayJobStatus.READY_TO_CLOSE
+                    closeRelayOnNoOtherJob(relayOpts.relayNumber, relayOpts.inverse)
                 }
 
                 relayFinishLatch?.countDown()
 
 
-                relayJobMap.relayThreadFinished(relayOpts.relayNumber, Thread.currentThread())
+                relayJobMap.relayJobFinished(relayOpts.relayNumber, jobInfo)
+
+                val jobList = relayJobMap.getAllRelayJobs(relayOpts.relayNumber)
+                logger.debug("Job list size on relay ${relayOpts.relayNumber} : ${jobList?.size}")
 
             } catch (e : InterruptedException) {
                 logger.debug("Relay ${relayOpts.relayNumber} thread was interrupted")
@@ -52,7 +61,7 @@ class RelayAlgorithmExecutor(private val driver: BoardDriver) {
             }
         })
 
-        relayJobMap.rememberRelayThread(relayOpts.relayNumber, thread, relayOpts)
+
         thread.start()
     }
 
@@ -61,24 +70,38 @@ class RelayAlgorithmExecutor(private val driver: BoardDriver) {
         driver.signalToRelay(relayNum, signal)
     }
 
-    private fun closeRelay(relayNum: Int, inverse: Boolean) {
-        val signal = inverse
-        driver.signalToRelay(relayNum, signal)
+    /**
+     * Алгоритм следующий: реле закрывается, если параллельно не происходит другого
+     * алгоритма, в котором оно должно быть открыто
+     */
+    private fun closeRelayOnNoOtherJob(relayNum: Int, inverse: Boolean) {
+        if(!anyJobWorkingOnRelay(relayNum)) {
+            val signal = inverse
+            driver.signalToRelay(relayNum, signal)
+        }
+    }
+
+    private fun anyJobWorkingOnRelay(relayNum: Int): Boolean {
+        val jobInfoList = relayJobMap.getAllRelayJobs(relayNum);
+
+        return jobInfoList?.any { j -> j.jobStatus == RelayJobStatus.WORKING } ?: false
     }
 
     fun stopBySignal(signalNum: Int) {
         logger.info("Received stop signal $signalNum")
 
-        val jobInfoList : List<RelayJobInfo> = relayJobMap.currentJobsForSignalNumber(signalNum)
+        val jobInfoList : List<RelayJobInfo> = relayJobMap.currentJobsForStopSignal(signalNum)
 
         jobInfoList.forEach {
             it.thread.interrupt()
 
             val relayNum = it.jobOptions.relayNumber;
-            closeRelay(relayNum, it.jobOptions.inverse)
+            closeRelayOnNoOtherJob(relayNum, it.jobOptions.inverse)
             logger.info("Stopped relay $relayNum on signal $signalNum")
         }
         relayJobMap.removeAllJobs(jobInfoList)
 
     }
+
+
 }

@@ -7,5 +7,6 @@ import com.parcel.coffee.core.hardware.options.data.RelayJobOptions
  */
 class RelayJobInfo(
     val thread: Thread,
-    val jobOptions: RelayJobOptions
+    val jobOptions: RelayJobOptions,
+    var jobStatus: RelayJobStatus
 )

@@ -364,9 +364,6 @@ public class MainAppController {
 		if(mouseEvent.getClickCount() == 2) {
 			topScreenWidgetController.stopAllTimers();
 			SceneSwitcher.getInstance().switchToLoginWindow();
-		} else {
-			commandExecutor.addCommandToQueue(new AddToBalanceCommand(100));
-			commandExecutor.addCommandToQueue(new SelectDrinkCommand(1));
 		}
 	}
 
