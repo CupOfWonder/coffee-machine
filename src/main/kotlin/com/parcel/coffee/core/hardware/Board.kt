@@ -1,6 +1,6 @@
 package com.parcel.coffee.core.hardware
 
-import com.parcel.coffee.core.hardware.driver.VirtualBoardDriver
+import com.parcel.coffee.core.hardware.driver.RaspberryPiBoardDriver
 import com.parcel.coffee.core.hardware.helpers.*
 import com.parcel.coffee.core.hardware.options.OptionsLoader
 import com.parcel.coffee.core.hardware.options.data.BoardOptions
@@ -11,7 +11,7 @@ import org.apache.log4j.Logger
 class Board {
     private val logger = Logger.getLogger(this.javaClass)
 
-    private var driver = VirtualBoardDriver()
+    private var driver = RaspberryPiBoardDriver()
 
     private lateinit var options : BoardOptions
 

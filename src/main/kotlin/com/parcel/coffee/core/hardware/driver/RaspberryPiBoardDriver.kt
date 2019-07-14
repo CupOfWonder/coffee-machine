@@ -57,8 +57,8 @@ class RaspberryPiBoardDriver : BoardDriver() {
     override fun addButtonPushHandler(buttonNum: Int, handler: ButtonPushHandler) {
         val buttonInput = getButtonPinInput(buttonNum)
 
-        buttonInput?.addListener(GpioPinListenerDigital {
-            if(buttonInput.isHigh) {
+        buttonInput?.addListener(GpioPinListenerDigital {e ->
+            if(e.state.isHigh) {
                 logger.info("Button $buttonNum pressed")
                 handler.onButtonPush()
             }
@@ -91,8 +91,8 @@ class RaspberryPiBoardDriver : BoardDriver() {
     override fun addTechSensorHandler(sensorNum: Int, handler: TechSensorHandler) {
         val sensorInput = getSensorPinInput(sensorNum)
 
-        sensorInput?.addListener(GpioPinListenerDigital {
-            if(sensorInput.isHigh) {
+        sensorInput?.addListener(GpioPinListenerDigital {e ->
+            if(e.state.isHigh) {
                 logger.info("Tech sensor $sensorNum triggered")
                 handler.onSensorTriggered()
             }
@@ -124,13 +124,11 @@ class RaspberryPiBoardDriver : BoardDriver() {
             val signalNum = it.key
             val stopInput = getStopSignalPinInput(signalNum)
 
-            stopInput?.let {
-                it.addListener(GpioPinListenerDigital {
-                    if(stopInput.isHigh) {
-                        handler.onStopSignalReceived(signalNum)
-                    }
-                })
-            }
+            stopInput?.addListener(GpioPinListenerDigital { e ->
+                if(e.state.isHigh) {
+                    handler.onStopSignalReceived(signalNum)
+                }
+            })
         }
     }
 
